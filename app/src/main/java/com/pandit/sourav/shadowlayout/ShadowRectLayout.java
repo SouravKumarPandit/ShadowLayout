@@ -33,6 +33,10 @@ public class ShadowRectLayout extends LinearLayout {
     private int layoutRightPadding = 0;
     private int layoutTopPadding = 0;
     private int layoutBottomPadding = 0;
+    int shadowLeft = 1;
+    int shadowRight = 1;
+    int shadowBottom = 1;
+    int shadowTop = 1;
 
 
     public ShadowRectLayout(Context context) {
@@ -64,7 +68,10 @@ public class ShadowRectLayout extends LinearLayout {
         shadowPaint.setColor(baseBackgroundColor);
         shadowPaint.setStyle(Paint.Style.FILL);
         shadowPaint.setAntiAlias(true);
-
+        boolean bShadowLeft = true;
+        boolean bShadowRight = true;
+        boolean bShadowBottom = true;
+        boolean bShadowTop = true;
 
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShadowRectLayout);
@@ -78,6 +85,15 @@ public class ShadowRectLayout extends LinearLayout {
             layoutRightPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Right_Padding, 0);
             layoutTopPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Top_Padding, 0);
             layoutBottomPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Bottom_padding, 0);
+            bShadowLeft = a.getBoolean(R.styleable.ShadowRectLayout_shadow_left, true);
+            bShadowRight = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Right, true);
+            bShadowBottom = a.getBoolean(R.styleable.ShadowRectLayout_shadow_bottom, true);
+            bShadowTop = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Top, true);
+
+            if (!bShadowLeft) shadowLeft = 0;
+            if (!bShadowRight) shadowRight = 0;
+            if (!bShadowBottom) shadowBottom = 0;
+            if (!bShadowTop) shadowTop = 0;
 
 
 //            if (false/*todo change it to autoColor true*/)
@@ -125,7 +141,8 @@ public class ShadowRectLayout extends LinearLayout {
             mInvalidate = false;
             shadowPaint.setShadowLayer(radius, offSetX, offSetY, this.shadowColor);
             float rectValue = (radius * 1.4f);
-            rectF.set(rectValue, rectValue, canvas.getWidth() - rectValue, canvas.getHeight() - rectValue);
+
+            rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
             canvas.drawRoundRect(rectF, shadowRound, shadowRound, shadowPaint);
             canvas.save();
         }

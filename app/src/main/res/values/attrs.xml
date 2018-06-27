@@ -12,5 +12,9 @@
         <attr name="layout_Right_Padding" format="dimension" />
         <attr name="layout_Top_Padding" format="dimension" />
         <attr name="layout_Bottom_padding" format="dimension" />
+        <attr name="shadow_left" format="boolean" />
+        <attr name="shadow_Right" format="boolean" />
+        <attr name="shadow_bottom" format="boolean" />
+        <attr name="shadow_Top" format="boolean" />
     </declare-styleable>
 </resources>
