@@ -14,153 +14,167 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 public class ShadowRectLayout extends LinearLayout {
 
+
+    public final Context mContext;
     private Paint shadowPaint;
     private RectF rectF;
-    int radius = 10;
-    float offSetX = 0;
-    float offSetY = 0;
+    int shadowRadius = 10;
+    float offSetX = -3;
+    float offSetY = 3;
     int baseBackgroundColor = 0xffffffff;
-    private int shadowRound = 0;
+    private int roundCornerRadius = 0;
     private int shadowColor = 0xffdedede;
-    private boolean mInvalidate;
+    private int mMaxChildren = 1;
+    //    private int layoutLeftPadding = 0;
+//    private int layoutRightPadding = 0;
+//    private int layoutTopPadding = 0;
+//    private int layoutBottomPadding = 0;
+    private int shadowLeft = 1;
+    private int shadowRight = 1;
+    private int shadowBottom = 1;
+    private int shadowTop = 1;
+    private boolean bShadowLeft = true;
+    private boolean bShadowRight = true;
+    private boolean bShadowBottom = true;
 
-    private int layoutLeftPadding = 0;
-    private int layoutRightPadding = 0;
-    private int layoutTopPadding = 0;
-    private int layoutBottomPadding = 0;
-    int shadowLeft = 1;
-    int shadowRight = 1;
-    int shadowBottom = 1;
-    int shadowTop = 1;
 
+    private boolean bShadowTop = true;
 
-    public ShadowRectLayout(Context context) {
-        super(context);
-        initView(context, null);
+    public ShadowRectLayout(Context mContext) {
+        super(mContext);
+        this.mContext = mContext;
+        initView(mContext, null);
 
     }
 
-    public ShadowRectLayout(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initView(context, attrs);
+    public ShadowRectLayout(Context mContext, @Nullable AttributeSet attrs) {
+        super(mContext, attrs);
+        this.mContext = mContext;
+        initView(mContext, attrs);
 
     }
 
 
-    public RoundLinearLayout getRoundLinearLayout() {
-        return roundLinearLayout;
-    }
-
-
-    private RoundLinearLayout roundLinearLayout;
+//    public RoundLinearLayout getRoundLinearLayout() {
+//        return roundLinearLayout;
+//    }
+//    private RoundLinearLayout roundLinearLayout;
 
     private void initView(Context context, AttributeSet attrs) {
         setGravity(Gravity.CENTER);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
-//        setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         shadowPaint = new Paint();
         rectF = new RectF();
-        shadowPaint.setColor(baseBackgroundColor);
-        shadowPaint.setStyle(Paint.Style.FILL);
-        shadowPaint.setAntiAlias(true);
-        boolean bShadowLeft = true;
-        boolean bShadowRight = true;
-        boolean bShadowBottom = true;
-        boolean bShadowTop = true;
-
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShadowRectLayout);
-            shadowRound = a.getDimensionPixelSize(R.styleable.ShadowRectLayout_shadowRectRound, shadowRound);
+            roundCornerRadius = a.getDimensionPixelSize(R.styleable.ShadowRectLayout_roundCornerRadius, roundCornerRadius);
             shadowColor = a.getColor(R.styleable.ShadowRectLayout_shadowRectColor, Color.LTGRAY);
             offSetX = a.getFloat(R.styleable.ShadowRectLayout_offsetX, -3);
             offSetY = a.getFloat(R.styleable.ShadowRectLayout_offsetY, 3);
-            radius = a.getInt(R.styleable.ShadowRectLayout_shadowRadius, 10);
+            shadowRadius = a.getInt(R.styleable.ShadowRectLayout_shadowRadius, 10);
             baseBackgroundColor = a.getColor(R.styleable.ShadowRectLayout_baseColor, baseBackgroundColor);
-            layoutLeftPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Left_Padding, 0);
-            layoutRightPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Right_Padding, 0);
-            layoutTopPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Top_Padding, 0);
-            layoutBottomPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Bottom_padding, 0);
+//            layoutLeftPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Left_Padding, 0);
+//            layoutRightPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Right_Padding, 0);
+//            layoutTopPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Top_Padding, 0);
+//            layoutBottomPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Bottom_padding, 0);
             bShadowLeft = a.getBoolean(R.styleable.ShadowRectLayout_shadow_left, true);
             bShadowRight = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Right, true);
             bShadowBottom = a.getBoolean(R.styleable.ShadowRectLayout_shadow_bottom, true);
             bShadowTop = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Top, true);
+            getRenderShadow();
 
-            if (!bShadowLeft) shadowLeft = 0;
-            if (!bShadowRight) shadowRight = 0;
-            if (!bShadowBottom) shadowBottom = 0;
-            if (!bShadowTop) shadowTop = 0;
-
-
+            a.recycle();
 //            if (false/*todo change it to autoColor true*/)
 //            shadowColor=getDarkerColor(shadowColor);
         }
+        intitView(context);
 
-        roundLinearLayout = new RoundLinearLayout(context);
-        roundLinearLayout.setPadding(layoutLeftPadding, layoutTopPadding, layoutRightPadding, layoutBottomPadding);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
 
-        int rectValue = (int) (radius * 1.4f);
-        params.setMargins(rectValue, rectValue, rectValue, rectValue);
-        roundLinearLayout.setLayoutParams(params);
-        roundLinearLayout.setRound(radius);
-        addView(roundLinearLayout);
+    private void intitView(Context context) {
+        shadowPaint.setColor(baseBackgroundColor);
+        shadowPaint.setStyle(Paint.Style.FILL);
+        shadowPaint.setAntiAlias(true);
+    }
 
 
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int N = getChildCount();
-                for (int i = 0; i < N; i++) {
-                    View view = getChildAt(i);
-                    if (i != 0) {
-                        removeView(view);
-                        getChildCount();
-                        continue;
-                    }
-                    N = getChildCount();
-                    mInvalidate = true;
-                }
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int row, col, left, top;
+        View view = getChildAt(0);
+        if (view != null) {
+            int radii = (int) (shadowRadius*1.8);
 
-//                ((RoundLinearLayout) getChildAt(0)).setRound(shadowRound);
-                mInvalidate = true;
-            }
-        });
-        mInvalidate = true;
+            view.layout(radii*shadowLeft, radii*shadowTop, getWidth() - radii*shadowRight, getHeight() - radii*shadowBottom);
+        }
+
 
     }
 
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (mInvalidate) {
-            mInvalidate = false;
-            shadowPaint.setShadowLayer(radius, offSetX, offSetY, this.shadowColor);
-            float rectValue = (radius * 1.4f);
+        shadowPaint.setShadowLayer(shadowRadius, offSetX, offSetY, this.shadowColor);
+        float rectValue = (float) (shadowRadius*1.8);
+        rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
+        canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
+        canvas.save();
 
-            rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
-            canvas.drawRoundRect(rectF, shadowRound, shadowRound, shadowPaint);
-            canvas.save();
-        }
         super.dispatchDraw(canvas);
     }
 
-
-    public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    @Override
+    public void addView(View child) {
+        if (getChildCount() > mMaxChildren) {
+            throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
+        }
+        super.addView(child);
     }
 
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    @Override
+    public void addView(View child, int index) {
+        if (getChildCount() > mMaxChildren) {
+            throw new IllegalStateException(" cannot have more than " + mMaxChildren + " direct children");
+        }
+
+        super.addView(child, index);
     }
 
-    public static float dpToPixel(float dp) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        return dp * metrics.density;
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        if (getChildCount() > mMaxChildren) {
+            throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
+        }
+
+        super.addView(child, index, params);
+    }
+
+    @Override
+    public void addView(View child, ViewGroup.LayoutParams params) {
+        if (getChildCount() > mMaxChildren) {
+            throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
+        }
+
+        super.addView(child, params);
+    }
+
+    @Override
+    public void addView(View child, int width, int height) {
+        if (getChildCount() > mMaxChildren) {
+            throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
+        }
+        super.addView(child, width, height);
+    }
+
+    public void getRenderShadow() {
+        if (!bShadowLeft) shadowLeft = 0;
+        if (!bShadowRight) shadowRight = 0;
+        if (!bShadowBottom) shadowBottom = 0;
+        if (!bShadowTop) shadowTop = 0;
     }
 
 
@@ -173,31 +187,38 @@ public class ShadowRectLayout extends LinearLayout {
         return darkerColor;
     }
 
+    public static int dpToPixel(float dp) {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        return (int) (dp * metrics.density);
+    }
+
+
+    public void setInnerLayoutPadding(int layoutLeftPadding,
+                                      int layoutRightPadding,
+                                      int layoutTopPadding,
+                                      int layoutBottomPadding) {
+
+    }
+
     public void setShadowColor(@ColorInt int color) {
         this.shadowColor = color;
         invalidate();
-        mInvalidate = true;
     }
 
-    public void setShadowRoundRadius(int radius) {
-        if (roundLinearLayout != null) {
-            roundLinearLayout.setRound(radius);
-        }
-
-        this.shadowRound = radius;
+    public void setRoundCornerRadius(int roundCornerRadius) {
+        this.roundCornerRadius = dpToPixel(roundCornerRadius);
         invalidate();
-        mInvalidate = true;
     }
 
 
     public int getRadius() {
-        return radius;
+        return shadowRadius;
     }
 
-    public void setRadius(int radius) {
-        this.radius = radius;
+    public void setShadowRadius(int shadowRadius) {
+
+        this.shadowRadius = dpToPixel(shadowRadius);
         invalidate();
-        mInvalidate = true;
 
     }
 
@@ -206,16 +227,14 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     public void setOffSetX(int offSetX) {
-        this.offSetX = offSetX;
+        this.offSetX = dpToPixel(offSetX);
         invalidate();
-        mInvalidate = true;
 
     }
 
     public void setOffSetY(int offSetY) {
-        this.offSetY = offSetY;
+        this.offSetY = dpToPixel(offSetY);
         invalidate();
-        mInvalidate = true;
 
     }
 
@@ -227,9 +246,48 @@ public class ShadowRectLayout extends LinearLayout {
         this.baseBackgroundColor = baseBackgroundColor;
         shadowPaint.setColor(baseBackgroundColor);
         invalidate();
-        mInvalidate = true;
 
     }
 
 
+    public void setShadowLeft(boolean bShadowLeft) {
+        this.bShadowLeft = bShadowLeft;
+        getRenderShadow();
+        invalidate();
+    }
+
+    public void setShadowRight(boolean bShadowRight) {
+        this.bShadowRight = bShadowRight;
+        getRenderShadow();
+        invalidate();
+    }
+
+    public void setShadowBottom(boolean bShadowBottom) {
+        this.bShadowBottom = bShadowBottom;
+        getRenderShadow();
+        invalidate();
+    }
+
+    public void setShadowTop(boolean bShadowTop) {
+        this.bShadowTop = bShadowTop;
+        getRenderShadow();
+        invalidate();
+    }
+
+    public boolean isbShadowRight() {
+        return bShadowRight;
+    }
+
+    public boolean isbShadowLeft() {
+        return bShadowLeft;
+    }
+
+    public boolean isbShadowBottom() {
+        return bShadowBottom;
+
+    }
+
+    public boolean isbShadowTop() {
+        return bShadowTop;
+    }
 }

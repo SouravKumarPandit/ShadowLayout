@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ShadowRectLayout">
-        <attr name="shadowRectRound" format="dimension" />
+        <attr name="roundCornerRadius" format="dimension" />
         <attr name="shadowRectColor" format="color" />
         <attr name="shadowPadding" format="float" />
         <attr name="offsetX" format="float" />
         <attr name="offsetY" format="float" />
         <attr name="baseColor" format="color" />
-        <attr name="shadowRadius" format="integer" />
+        <attr name="shadowRadius" format="dimension" />
         <attr name="layout_Left_Padding" format="dimension" />
         <attr name="layout_Right_Padding" format="dimension" />
         <attr name="layout_Top_Padding" format="dimension" />
