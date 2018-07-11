@@ -15,6 +15,7 @@
         app:shadowRadius="25dp"
         app:offsetX="5"
         app:offsetY="10"
+
         app:shadowRectColor="#c1c1c1">
 
 

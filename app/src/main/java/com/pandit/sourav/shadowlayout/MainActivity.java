@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -35,19 +36,19 @@ public class MainActivity extends AppCompatActivity {
 
         ShadowRectLayout rectLayout = new ShadowRectLayout(this);
         rectLayout.setClipToPadding(false);
-//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(getScreenWidth()/2, getScreenWidth()/2));
-        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        rectLayout.setShadowRadius(8);
+        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(getScreenWidth()/2, getScreenWidth()/2));
+//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        rectLayout.setShadowRadius(dpToPixel(5));
 
 //        rectLayout.setShadowColor(Color.RED);
-        rectLayout.setShadowColor(Color.DKGRAY);
+        rectLayout.setShadowColor(Color.GRAY);
         rectLayout.setOffSetX(0);
-        rectLayout.setOffSetY(5);
+        rectLayout.setOffSetY(0);
 //        rectLayout.setShadowLeft(false);
 //        rectLayout.setShadowRight(false);
 //        rectLayout.setShadowBottom(false);
 //        rectLayout.setShadowTop(false);
-        rectLayout.setRoundCornerRadius(50);
+        rectLayout.setRoundCornerRadius(500);
         linearLayout.addView(rectLayout);
 
 
@@ -57,11 +58,19 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView = new TextView(this);
         textView.setTextColor(Color.DKGRAY);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-        textView.setPadding(0,0,dpToPixel(15),0);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        textView.setPadding(dpToPixel(10),dpToPixel(5),dpToPixel(10),dpToPixel(5));
+//        textView.setTextColor(Color.WHITE);
         textView.setText("Hello Android");
         textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textView.setBackgroundColor(0x77E27177);
+
+        GradientDrawable gradientDrawable=new GradientDrawable();
+        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+        gradientDrawable.setCornerRadius(50);
+        gradientDrawable.setColor(0x96FFFFFF);
+//        textView.setBackgroundColor(0x77E27177);
+        textView.setBackground(gradientDrawable);
+        textView.setTypeface(Typeface.DEFAULT_BOLD);
         linearLayout1.addView(textView);
 
 

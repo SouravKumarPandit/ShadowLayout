@@ -37,20 +37,19 @@ public class ShadowRectLayout extends LinearLayout {
     private int roundCornerRadius = 0;
     private int shadowColor = 0xffdedede;
     private int mMaxChildren = 1;
-    //    private int layoutLeftPadding = 0;
-//    private int layoutRightPadding = 0;
-//    private int layoutTopPadding = 0;
-//    private int layoutBottomPadding = 0;
     private int shadowLeft = 1;
     private int shadowRight = 1;
     private int shadowBottom = 1;
     private int shadowTop = 1;
+    private int imgGradientColor1 = 0x00FFFFFF;
+    private int imgGradientColor2 = 0x00FFFFFF;
     private boolean bShadowLeft = true;
     private boolean bShadowRight = true;
     private boolean bShadowBottom = true;
 
 
     private boolean bShadowTop = true;
+    private int resDrawable = -1;
 
     public ShadowRectLayout(Context mContext) {
         super(mContext);
@@ -84,11 +83,10 @@ public class ShadowRectLayout extends LinearLayout {
             offSetX = a.getFloat(R.styleable.ShadowRectLayout_offsetX, -3);
             offSetY = a.getFloat(R.styleable.ShadowRectLayout_offsetY, 3);
             shadowRadius = a.getInt(R.styleable.ShadowRectLayout_shadowRadius, 10);
+            resDrawable = a.getInt(R.styleable.ShadowRectLayout_imgBackground, -1);
+            imgGradientColor1 = a.getColor(R.styleable.ShadowRectLayout_imgGradientColor1, 0x00FFFFFF);
+            imgGradientColor2 = a.getColor(R.styleable.ShadowRectLayout_imgGradientColor2, 0x00FFFFFF);
             baseBackgroundColor = a.getColor(R.styleable.ShadowRectLayout_baseColor, baseBackgroundColor);
-//            layoutLeftPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Left_Padding, 0);
-//            layoutRightPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Right_Padding, 0);
-//            layoutTopPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Top_Padding, 0);
-//            layoutBottomPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Bottom_padding, 0);
             bShadowLeft = a.getBoolean(R.styleable.ShadowRectLayout_shadow_left, true);
             bShadowRight = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Right, true);
             bShadowBottom = a.getBoolean(R.styleable.ShadowRectLayout_shadow_bottom, true);
@@ -112,12 +110,38 @@ public class ShadowRectLayout extends LinearLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int row, col, left, top;
         View view = getChildAt(0);
-        if (view != null) {
-            int radii = (int) (shadowRadius*1.8);
+        int radii = (int) (shadowRadius * 1.8);
+        int left;//= radii * shadowLeft + roundCornerRadius / 2;
+        int top;//= radii * shadowTop + roundCornerRadius / 2;
+        int right;//= getWidth() - radii * shadowRight - roundCornerRadius / 2;
+        int bottom;//= getHeight() - radii * shadowBottom - roundCornerRadius / 2;
+        if (roundCornerRadius >= getWidth() / 2 && roundCornerRadius >= getHeight() / 2) {
+            left = getWidth() / 4;
+            top = getWidth() / 4;
+            right = getWidth() - getWidth() / 4;
+            bottom = getHeight() - getWidth() / 4;
 
-            view.layout(radii*shadowLeft+roundCornerRadius/2, radii*shadowTop+roundCornerRadius/2, getWidth() - radii*shadowRight-roundCornerRadius/2, getHeight() - radii*shadowBottom-roundCornerRadius/2);
+        } /*else if (roundCornerRadius >= getWidth() / 2) {
+            left  =4;
+            top   =4;
+            right =4;
+            bottom=4;
+
+        } else if (roundCornerRadius >= getHeight() / 2) {
+            left  =2;
+            top   =2;
+            right =2;
+            bottom=2;
+        }*/ else {
+            left = radii * shadowLeft + roundCornerRadius / 2;
+            top = radii * shadowTop + roundCornerRadius / 2;
+            right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
+            bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
+
+        }
+        if (view != null) {
+            view.layout(left, top, right, bottom);
         }
 
 
@@ -127,18 +151,16 @@ public class ShadowRectLayout extends LinearLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         shadowPaint.setShadowLayer(shadowRadius, offSetX, offSetY, this.shadowColor);
-        float rectValue = (float) (shadowRadius*1.8);
+        float rectValue = (float) (shadowRadius * 1.8);
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
 
-
-        Drawable d = getGradientDrawable(mContext,R.drawable.metting_img,dpToPixel(50),0xBC8438C9,0xCBBE235E);
-        d.setBounds((int)rectF.left,(int)rectF.top,(int)rectF.right,(int)rectF.bottom);
-        d.draw(canvas);
+        Drawable d = getGradientDrawable(mContext, R.drawable.metting_img,50,0xBC8438C9,0xCBBE235E);
+        if (d != null) {
+            d.setBounds((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
+            d.draw(canvas);
+        }
         canvas.save();
-
-
-
         super.dispatchDraw(canvas);
     }
 
@@ -202,38 +224,48 @@ public class ShadowRectLayout extends LinearLayout {
         return darkerColor;
     }
 
-    public static int dpToPixel(float dp) {
+ /*   public static int dpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         return (int) (dp * metrics.density);
-    }
+    }*/
 
-    public  Drawable getGradientDrawable(Context mContext, int imgDrawable, float fRadius, int color1, int color2 ) {
-        float radius = fRadius;
-        float[] m_arrfTopHalfOuterRadii =
-                new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius};
-        Bitmap bitmap= BitmapFactory.decodeResource(mContext.getResources(),imgDrawable);
-        final float roundPx = (float) bitmap.getWidth() * radius;
-
-        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
-        roundedBitmapDrawable.setCornerRadius(radius);
-
-        Drawable imageDrawable=roundedBitmapDrawable;
-
-
-        GradientDrawable roundGradiantDrawable = new GradientDrawable();
-//        gradientDrawable.setOrientation(GradientDrawable.Orientation.BL_TR);
-        roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
-        roundGradiantDrawable.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius,radius,radius});
-        roundGradiantDrawable.setColors(new int[]{color1, color2});
+    public Drawable getGradientDrawable(Context mContext, int imgDrawable, float fRadius, int color1, int color2) {
+        //        float[] m_arrfTopHalfOuterRadii =new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius};
+        RoundedBitmapDrawable roundedBitmapDrawable = null;
+        LayerDrawable layerdrawable = null;
+        GradientDrawable roundGradiantDrawable = null;
+        if (imgDrawable < 0) {
+            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgDrawable);
+            roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
+            roundedBitmapDrawable.setCornerRadius(fRadius);
+        }
 
 
-        Drawable[] drawarray = {imageDrawable, roundGradiantDrawable};
-        LayerDrawable layerdrawable = new LayerDrawable(drawarray);
+        if (imgGradientColor1 != 0x00FFFFFF || imgGradientColor2 != 0x00FFFFFF) {
 
-//        int _nHalfOfCellHeight = m_nCellHeight / 2;
-        layerdrawable.setLayerInset(0, 0, 0, 0, 0); //top half
-        layerdrawable.setLayerInset(1, 0, 0, 0, 0); //top half
-//        layerdrawable.setLayerInset(2, 0, _nHalfOfCellHeight, 0, 0); //bottom half
+            roundGradiantDrawable = new GradientDrawable();
+            roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
+            roundGradiantDrawable.setCornerRadii(new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius});
+            roundGradiantDrawable.setColors(new int[]{color1, color2});
+        }
+
+        if (roundedBitmapDrawable != null && roundGradiantDrawable != null) {
+            Drawable[] drawableArray = {roundedBitmapDrawable, roundGradiantDrawable};
+            layerdrawable = new LayerDrawable(drawableArray);
+            layerdrawable.setLayerInset(0, 0, 0, 0, 0);
+            layerdrawable.setLayerInset(1, 0, 0, 0, 0);
+
+        } else if (roundedBitmapDrawable == null && roundGradiantDrawable != null) {
+            Drawable[] drawarray = {roundGradiantDrawable};
+            layerdrawable = new LayerDrawable(drawarray);
+            layerdrawable.setLayerInset(0, 0, 0, 0, 0);
+        }
+        if (roundedBitmapDrawable != null && roundGradiantDrawable == null) {
+            Drawable[] drawarray = {roundedBitmapDrawable};
+            layerdrawable = new LayerDrawable(drawarray);
+            layerdrawable.setLayerInset(0, 0, 0, 0, 0);
+        } else return null;
+
 
         return layerdrawable;
     }
@@ -244,7 +276,7 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     public void setRoundCornerRadius(int roundCornerRadius) {
-        this.roundCornerRadius = dpToPixel(roundCornerRadius);
+        this.roundCornerRadius = roundCornerRadius;
         invalidate();
     }
 
@@ -255,7 +287,7 @@ public class ShadowRectLayout extends LinearLayout {
 
     public void setShadowRadius(int shadowRadius) {
 
-        this.shadowRadius = dpToPixel(shadowRadius);
+        this.shadowRadius = shadowRadius;
         invalidate();
 
     }
@@ -265,25 +297,23 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     public void setOffSetX(int offSetX) {
-        if (offSetX>shadowRadius)
-        {
+        if (offSetX > shadowRadius) {
             this.offSetX = shadowRadius;
             invalidate();
             return;
         }
-        this.offSetX = dpToPixel(offSetX);
+        this.offSetX = offSetX;
         invalidate();
 
     }
 
     public void setOffSetY(int offSetY) {
-        if (offSetY>shadowRadius)
-        {
+        if (offSetY > shadowRadius) {
             this.offSetY = shadowRadius;
             invalidate();
             return;
         }
-        this.offSetY = dpToPixel(offSetY);
+        this.offSetY = offSetY;
         invalidate();
 
     }

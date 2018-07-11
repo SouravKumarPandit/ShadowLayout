@@ -3,11 +3,32 @@
     <declare-styleable name="ShadowRectLayout">
         <attr name="roundCornerRadius" format="dimension" />
         <attr name="shadowRectColor" format="color" />
-        <attr name="shadowPadding" format="float" />
+        <attr name="shadowPadding" format="dimension" />
         <attr name="offsetX" format="float" />
         <attr name="offsetY" format="float" />
         <attr name="baseColor" format="color" />
+        <attr name="imgGradientColor1" format="color" />
+        <attr name="imgGradientColor2" format="color" />
         <attr name="shadowRadius" format="dimension" />
+        <attr name="imgBackground" format="integer" />
+
+        <attr name="shadow_left" format="boolean" />
+        <attr name="shadow_Right" format="boolean" />
+        <attr name="shadow_bottom" format="boolean" />
+        <attr name="shadow_Top" format="boolean" />
+    </declare-styleable>
+    <!--<declare-styleable name="ShadowRectLayoutbak">
+        <attr name="roundCornerRadius" format="dimension" />
+        <attr name="shadowRectColor" format="color" />
+        <attr name="shadowPadding" format="dimension" />
+        <attr name="offsetX" format="float" />
+        <attr name="offsetY" format="float" />
+        <attr name="baseColor" format="color" />
+        <attr name="imgGradientColor1" format="color" />
+        <attr name="imgGradientColor2" format="color" />
+        <attr name="shadowRadius" format="dimension" />
+        <attr name="imgBackground" format="integer" />
+
         <attr name="layout_Left_Padding" format="dimension" />
         <attr name="layout_Right_Padding" format="dimension" />
         <attr name="layout_Top_Padding" format="dimension" />
@@ -16,5 +37,5 @@
         <attr name="shadow_Right" format="boolean" />
         <attr name="shadow_bottom" format="boolean" />
         <attr name="shadow_Top" format="boolean" />
-    </declare-styleable>
+    </declare-styleable>-->
 </resources>

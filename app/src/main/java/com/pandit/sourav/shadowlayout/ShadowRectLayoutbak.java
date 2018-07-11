@@ -76,17 +76,17 @@ public class ShadowRectLayoutbak extends LinearLayout {
 
 
         if (attrs != null) {
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShadowRectLayout);
-            shadowRound = a.getDimensionPixelSize(R.styleable.ShadowRectLayout_roundCornerRadius, shadowRound);
-            shadowColor = a.getColor(R.styleable.ShadowRectLayout_shadowRectColor, Color.LTGRAY);
-            offSetX = a.getFloat(R.styleable.ShadowRectLayout_offsetX, -3);
-            offSetY = a.getFloat(R.styleable.ShadowRectLayout_offsetY, 3);
-            radius = a.getInt(R.styleable.ShadowRectLayout_shadowRadius, 10);
-            baseBackgroundColor = a.getColor(R.styleable.ShadowRectLayout_baseColor, baseBackgroundColor);
-            layoutLeftPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Left_Padding, 0);
-            layoutRightPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Right_Padding, 0);
-            layoutTopPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Top_Padding, 0);
-            layoutBottomPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayout_layout_Bottom_padding, 0);
+           /* TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShadowRectLayoutbak);
+            shadowRound = a.getDimensionPixelSize(R.styleable.ShadowRectLayoutbak_roundCornerRadius, shadowRound);
+            shadowColor = a.getColor(R.styleable.ShadowRectLayoutbak_shadowRectColor, Color.LTGRAY);
+            offSetX = a.getFloat(R.styleable.ShadowRectLayoutbak_offsetX, -3);
+            offSetY = a.getFloat(R.styleable.ShadowRectLayoutbak_offsetY, 3);
+            radius = a.getInt(R.styleable.ShadowRectLayoutbak_shadowRadius, 10);
+            baseBackgroundColor = a.getColor(R.styleable.ShadowRectLayoutbak_baseColor, baseBackgroundColor);
+            layoutLeftPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayoutbak_layout_Left_Padding, 0);
+            layoutRightPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayoutbak_layout_Right_Padding, 0);
+            layoutTopPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayoutbak_layout_Top_Padding, 0);
+            layoutBottomPadding = a.getDimensionPixelOffset(R.styleable.ShadowRectLayoutbak_layout_Bottom_padding, 0);
             bShadowLeft = a.getBoolean(R.styleable.ShadowRectLayout_shadow_left, true);
             bShadowRight = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Right, true);
             bShadowBottom = a.getBoolean(R.styleable.ShadowRectLayout_shadow_bottom, true);
@@ -95,7 +95,7 @@ public class ShadowRectLayoutbak extends LinearLayout {
             if (!bShadowLeft) shadowLeft = 0;
             if (!bShadowRight) shadowRight = 0;
             if (!bShadowBottom) shadowBottom = 0;
-            if (!bShadowTop) shadowTop = 0;
+            if (!bShadowTop) shadowTop = 0;*/
 
 
 //            if (false/*todo change it to autoColor true*/)
