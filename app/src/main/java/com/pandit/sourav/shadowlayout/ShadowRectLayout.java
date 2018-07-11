@@ -3,12 +3,20 @@ package com.pandit.sourav.shadowlayout;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -109,7 +117,7 @@ public class ShadowRectLayout extends LinearLayout {
         if (view != null) {
             int radii = (int) (shadowRadius*1.8);
 
-            view.layout(radii*shadowLeft, radii*shadowTop, getWidth() - radii*shadowRight, getHeight() - radii*shadowBottom);
+            view.layout(radii*shadowLeft+roundCornerRadius/2, radii*shadowTop+roundCornerRadius/2, getWidth() - radii*shadowRight-roundCornerRadius/2, getHeight() - radii*shadowBottom-roundCornerRadius/2);
         }
 
 
@@ -122,7 +130,14 @@ public class ShadowRectLayout extends LinearLayout {
         float rectValue = (float) (shadowRadius*1.8);
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
+
+
+        Drawable d = getGradientDrawable(mContext,R.drawable.metting_img,dpToPixel(50),0xBC8438C9,0xCBBE235E);
+        d.setBounds((int)rectF.left,(int)rectF.top,(int)rectF.right,(int)rectF.bottom);
+        d.draw(canvas);
         canvas.save();
+
+
 
         super.dispatchDraw(canvas);
     }
@@ -192,12 +207,35 @@ public class ShadowRectLayout extends LinearLayout {
         return (int) (dp * metrics.density);
     }
 
+    public  Drawable getGradientDrawable(Context mContext, int imgDrawable, float fRadius, int color1, int color2 ) {
+        float radius = fRadius;
+        float[] m_arrfTopHalfOuterRadii =
+                new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius};
+        Bitmap bitmap= BitmapFactory.decodeResource(mContext.getResources(),imgDrawable);
+        final float roundPx = (float) bitmap.getWidth() * radius;
 
-    public void setInnerLayoutPadding(int layoutLeftPadding,
-                                      int layoutRightPadding,
-                                      int layoutTopPadding,
-                                      int layoutBottomPadding) {
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
+        roundedBitmapDrawable.setCornerRadius(radius);
 
+        Drawable imageDrawable=roundedBitmapDrawable;
+
+
+        GradientDrawable roundGradiantDrawable = new GradientDrawable();
+//        gradientDrawable.setOrientation(GradientDrawable.Orientation.BL_TR);
+        roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
+        roundGradiantDrawable.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius,radius,radius});
+        roundGradiantDrawable.setColors(new int[]{color1, color2});
+
+
+        Drawable[] drawarray = {imageDrawable, roundGradiantDrawable};
+        LayerDrawable layerdrawable = new LayerDrawable(drawarray);
+
+//        int _nHalfOfCellHeight = m_nCellHeight / 2;
+        layerdrawable.setLayerInset(0, 0, 0, 0, 0); //top half
+        layerdrawable.setLayerInset(1, 0, 0, 0, 0); //top half
+//        layerdrawable.setLayerInset(2, 0, _nHalfOfCellHeight, 0, 0); //bottom half
+
+        return layerdrawable;
     }
 
     public void setShadowColor(@ColorInt int color) {
@@ -227,12 +265,24 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     public void setOffSetX(int offSetX) {
+        if (offSetX>shadowRadius)
+        {
+            this.offSetX = shadowRadius;
+            invalidate();
+            return;
+        }
         this.offSetX = dpToPixel(offSetX);
         invalidate();
 
     }
 
     public void setOffSetY(int offSetY) {
+        if (offSetY>shadowRadius)
+        {
+            this.offSetY = shadowRadius;
+            invalidate();
+            return;
+        }
         this.offSetY = dpToPixel(offSetY);
         invalidate();
 

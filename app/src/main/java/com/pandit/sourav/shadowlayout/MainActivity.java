@@ -1,7 +1,15 @@
 package com.pandit.sourav.shadowlayout;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -29,16 +37,17 @@ public class MainActivity extends AppCompatActivity {
         rectLayout.setClipToPadding(false);
 //        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(getScreenWidth()/2, getScreenWidth()/2));
         rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        rectLayout.setShadowRadius(15);
+        rectLayout.setShadowRadius(8);
+
 //        rectLayout.setShadowColor(Color.RED);
-        rectLayout.setShadowColor(Color.GRAY);
+        rectLayout.setShadowColor(Color.DKGRAY);
         rectLayout.setOffSetX(0);
-        rectLayout.setOffSetY(0);
+        rectLayout.setOffSetY(5);
 //        rectLayout.setShadowLeft(false);
 //        rectLayout.setShadowRight(false);
 //        rectLayout.setShadowBottom(false);
 //        rectLayout.setShadowTop(false);
-        rectLayout.setRoundCornerRadius(0);
+        rectLayout.setRoundCornerRadius(50);
         linearLayout.addView(rectLayout);
 
 
@@ -55,84 +64,14 @@ public class MainActivity extends AppCompatActivity {
         textView.setBackgroundColor(0x77E27177);
         linearLayout1.addView(textView);
 
-//        TextView testView = new TextView(this);
-//        testView.setTextColor(Color.DKGRAY);
-//        testView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-//        testView.setText("Hello Android");
-//        testView.setLayoutParams(new LinearLayout.LayoutParams(200, 100));
-//        testView.setBackgroundColor(0x77E27177);
 
         rectLayout.addView(linearLayout1);
-//        rectLayout.addView(testView);
-
 
         setContentView(linearLayout);
 
-
-//        setContentView(R.layout.activity_main);
-//        this.seekBar = (AppCompatSeekBar) findViewById(R.id.seekbar);
-//        this.seekBar2 = (AppCompatSeekBar) findViewById(R.id.seekbar2);
-//        final ShadowRectLayout shadowRectLayout = findViewById(R.id.shadow3);
-//        shadowRectLayout.setBaseBackgroundColor(Color.BLACK);
-//        shadowRectLayout.setBaseBackgroundColor(getResources().getColor(R.color.sample_color));
-//        shadowRectLayout.setRoundCornerRadius(30);
-//        shadowRectLayout.setOffSetX(0);
-//        shadowRectLayout.setOffSetY(6);
-//            shadowRectLayout.setShadowColor(Color.GREEN);
-
-/*
-
-        RoundLinearLayout roundLayout = shadowRectLayout.getRoundLinearLayout();
-
-        roundLayout.setOrientation(LinearLayout.VERTICAL);
-        for (int i = 0; i < 5; i++) {
-            TextView textView = new TextView(this);
-            textView.setText("HELLO");
-//            textView.setBackgroundColor(Color.BLUE);
-            textView.setPadding(15, 10, 15, 10);
-//            textView.setBackgroundColor(getResources().getColor(R.color.child_color));
-            textView.setTextColor(Color.BLACK);
-            roundLayout.addView(textView);
-        }
-        RoundLinearLayout inerlayout = shadowRectLayout.getRoundLinearLayout();
-        final View view = inerlayout.getChildAt(0);
-        seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-//                shadowRectLayout.setRoundCornerRadius(progress);
-                view.setPadding(15, 0, i, 0);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                shadowRectLayout.setRoundCornerRadius(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-*/
-
     }
+
+
 
 
     public static int getScreenWidth() {
