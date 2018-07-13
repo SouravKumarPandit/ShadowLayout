@@ -135,8 +135,6 @@ public class ShadowRectLayoutbak extends LinearLayout {
         mInvalidate = true;
 
     }
-
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         if (mInvalidate) {
@@ -185,7 +183,6 @@ public class ShadowRectLayoutbak extends LinearLayout {
         if (roundLinearLayout != null) {
             roundLinearLayout.setRound(radius);
         }
-
         this.shadowRound = radius;
         invalidate();
         mInvalidate = true;

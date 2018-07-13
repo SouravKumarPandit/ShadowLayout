@@ -43,10 +43,10 @@ public class ShadowRectLayout extends LinearLayout {
     private int shadowTop = 1;
     private int imgGradientColor1 = -1;
     private int imgGradientColor2 = -1;
+
     private boolean bShadowLeft = true;
     private boolean bShadowRight = true;
     private boolean bShadowBottom = true;
-
 
     private boolean bShadowTop = true;
     private int resDrawable = -1;
@@ -106,31 +106,42 @@ public class ShadowRectLayout extends LinearLayout {
         shadowPaint.setStyle(Paint.Style.FILL);
         shadowPaint.setAntiAlias(true);
     }
+/*
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-super.onMeasure(widthMeasureSpec,heightMeasureSpec);
-      /*  final int containerWidth = MeasureSpec.getSize(widthMeasureSpec);
-        final int containerHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        final int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(containerWidth, MeasureSpec.EXACTLY);
-        final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(containerHeight, MeasureSpec.UNSPECIFIED);
+        View childView = getChildAt(0);
+        if (childView != null) {
 
-        View child;
-        int totalChildHeight = 0;
+            // Measure icon.
+            measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
 
-        for (int i = 0; i < getChildCount(); i++) {
-            child = getChildAt(i);
+            // Figure out how much width the icon used.
+            MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();
+            int widthUsed = childView.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
 
-            if (child == null || child.getVisibility() == View.GONE)
-                continue;
 
-            measureChildWithMargins(child, childWidthMeasureSpec, 0, childHeightMeasureSpec, totalChildHeight);
+            // Figure out how much total space the icon used.
+            int iconWidth = childView.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+            int iconHeight = childView.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
 
-            totalChildHeight += child.getMeasuredHeight();
-        }
 
-        setMeasuredDimension(containerWidth, totalChildHeight);*/
-    }
+            // The width taken by the children + padding.
+            int width = getPaddingTop() + getPaddingBottom() +
+                    iconWidth + Math.max(0, iconWidth);
+            // The height taken by the children + padding.
+            int height = getPaddingTop() + getPaddingBottom() +
+                    Math.max(0, iconHeight);
+
+            // Reconcile the measured dimensions with the this view's constraints and
+            // set the final measured width and height.
+            setMeasuredDimension(
+                    resolveSize(width, widthMeasureSpec),
+                    resolveSize(height, heightMeasureSpec)
+            );
+        } else super.setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+
+    }*/
 
 
     @Override
@@ -141,40 +152,98 @@ super.onMeasure(widthMeasureSpec,heightMeasureSpec);
         int top;//= radii * shadowTop + roundCornerRadius / 2;
         int right;//= getWidth() - radii * shadowRight - roundCornerRadius / 2;
         int bottom;//= getHeight() - radii * shadowBottom - roundCornerRadius / 2;
-    /*    if (roundCornerRadius == getWidth() / 2 && roundCornerRadius == getHeight() / 2) {
+        renderRoundCornerRadius(roundCornerRadius);
+
+      /*  if (getWidth() / 2 == getHeight() / 2 && (getWidth() / 2 <= roundCornerRadius || getHeight() / 2 <= roundCornerRadius)) {
+
+            roundCornerRadius = (int) scale(roundCornerRadius, getWidth(), 0, 0, getWidth() / 2);
+
             left = getWidth() / 6;
-            top = getWidth() / 6;
+            top = getHeight() / 6;
             right = getWidth() - getWidth() / 6;
-            bottom = getHeight() - getWidth() / 6;
-            roundCornerRadius = getHeight() - getWidth() / 6;
+            bottom = getHeight() - getHeight() / 6;
 
-        } else*/
-
-
-        if (getWidth()==getHeight()&&(roundCornerRadius >= getWidth() / 2 || roundCornerRadius <= getHeight() / 2)) {
-            roundCornerRadius=getWidth()/2;
-            left = getWidth() / 6;
-            top = radii * shadowTop +getWidth() / 6;/*+ roundCornerRadius / 2*/;
-            right = getWidth()-getWidth() / 6;
-            bottom = getHeight() - radii * shadowBottom-getWidth() / 6 /*- roundCornerRadius / 2*/;
-
-
-        } else if (roundCornerRadius >= getHeight() / 2 && roundCornerRadius <= getWidth() / 2) {
+        } else if (getWidth() / 2 <= roundCornerRadius && getHeight() / 2 <= roundCornerRadius) {
+            if (getWidth() / 2 > getHeight() / 2) {
+                roundCornerRadius = (int) scale(roundCornerRadius, 0, getWidth()/2, 0, getWidth() / 2);
+                left = radii * shadowLeft + roundCornerRadius / 2;
+                top = radii * shadowTop + roundCornerRadius / 2;
+                right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
+                bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
+            } else {
+                roundCornerRadius = (int) scale(roundCornerRadius, 0, getHeight() / 2, 0, getHeight() / 2);
+                left = radii * shadowLeft + roundCornerRadius / 2;
+                top = radii * shadowTop + roundCornerRadius / 2;
+                right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
+                bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
+            }
+        } else if (getHeight() / 2 <= roundCornerRadius) {
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, getHeight() / 2, 0, getHeight() / 2);
+            left = radii * shadowLeft + getWidth() / 6;
+            top = radii * shadowTop;
+            right = getWidth() - getWidth() / 6;
+            bottom = getHeight() - radii * shadowBottom;
+        } else if (getWidth() / 2 <= roundCornerRadius) {
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, getWidth() / 2, 0, getWidth() / 2);
             left = radii * shadowLeft + roundCornerRadius / 2;
             top = getWidth() / 6;
             right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-            bottom = getWidth() / 6;
+            bottom = getHeight() - getHeight() / 6;
         } else {
             left = radii * shadowLeft + roundCornerRadius / 2;
             top = radii * shadowTop + roundCornerRadius / 2;
             right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
             bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
-
         }
+*/
+
+
+       /* if (getWidth() == getHeight() && (roundCornerRadius >= getWidth() / 2 || roundCornerRadius <= getHeight() / 2)) {
+            roundCornerRadius = getWidth() / 2;
+            left = getWidth() / 6;
+            top = radii * shadowTop + getWidth() / 6;*//*+ roundCornerRadius / 2*//*
+            ;
+            right = getWidth() - getWidth() / 6;
+            bottom = getHeight() - radii * shadowBottom - getWidth() / 6 *//*- roundCornerRadius / 2*//*;
+
+
+        }*//* else if (roundCornerRadius >= getHeight() / 2 && roundCornerRadius <= getWidth() / 2) {
+            roundCornerRadius = getWidth() / 2;
+
+            left = radii * shadowLeft + roundCornerRadius / 2;
+            top = getWidth() / 6;
+            right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
+            bottom = getWidth() / 6;
+        } *//* else {*/
+//        left = radii * shadowLeft + roundCornerRadius / 2;
+//        top = radii * shadowTop + roundCornerRadius / 2;
+//        right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
+//        bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
+
+//        }
+        left = radii * shadowLeft + roundCornerRadius / 2;
+        top = radii * shadowTop + roundCornerRadius / 2;
+        right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
+        bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
         if (view != null) {
-                view.layout(left, top, right, bottom);
+            view.layout(left, top, right, bottom);
         }
 
+
+    }
+
+    private void renderRoundCornerRadius(int roundCornerRadius) {
+        if (roundCornerRadius > 1000)
+            roundCornerRadius = 1000;
+        else if (roundCornerRadius < 0)
+            roundCornerRadius = 0;
+        if (getWidth() == getHeight())
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 1000, 0, getWidth() / 2);
+        else if (getWidth() < getHeight())
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 1000, 0, getWidth() / 2);
+        else
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 1000, 0, getHeight() / 2);
+        this.roundCornerRadius = roundCornerRadius;
 
     }
 
@@ -186,7 +255,7 @@ super.onMeasure(widthMeasureSpec,heightMeasureSpec);
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
 
-        Drawable d = getGradientDrawable(mContext, R.drawable.metting_img, roundCornerRadius, -1, 0xCBBE235E);
+        Drawable d = getGradientDrawable(mContext, resDrawable, roundCornerRadius, imgGradientColor1, imgGradientColor2);
         if (d != null) {
             d.setBounds((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
             d.draw(canvas);
@@ -272,15 +341,15 @@ super.onMeasure(widthMeasureSpec,heightMeasureSpec);
         }
 
 
-        if (color1 != -1 || color2 !=-1) {
+        if (color1 != -1 || color2 != -1) {
 
             roundGradiantDrawable = new GradientDrawable();
             roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
             roundGradiantDrawable.setCornerRadii(new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius});
-            if (color1 !=-1 && color2 == -1)
+            if (color1 != -1 && color2 == -1)
 //                roundGradiantDrawable.setColors(new int[]{color1,0x00FFFFFF});
                 roundGradiantDrawable.setColor(color1);
-            else if (color1 ==-1&& color2 !=-1)
+            else if (color1 == -1 && color2 != -1)
 //                roundGradiantDrawable.setColors(new int[]{0x00FFFFFF,color2});
                 roundGradiantDrawable.setColor(color2);
             else
@@ -297,8 +366,7 @@ super.onMeasure(widthMeasureSpec,heightMeasureSpec);
             Drawable[] drawarray = {roundGradiantDrawable};
             layerdrawable = new LayerDrawable(drawarray);
             layerdrawable.setLayerInset(0, 0, 0, 0, 0);
-        }else
-        if (roundedBitmapDrawable != null && roundGradiantDrawable == null) {
+        } else if (roundedBitmapDrawable != null && roundGradiantDrawable == null) {
             Drawable[] drawarray = {roundedBitmapDrawable};
             layerdrawable = new LayerDrawable(drawarray);
             layerdrawable.setLayerInset(0, 0, 0, 0, 0);
@@ -316,6 +384,10 @@ super.onMeasure(widthMeasureSpec,heightMeasureSpec);
     public void setRoundCornerRadius(int roundCornerRadius) {
         this.roundCornerRadius = roundCornerRadius;
         invalidate();
+    }
+
+    public double scale(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
+        return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
     }
 
 
@@ -367,6 +439,37 @@ super.onMeasure(widthMeasureSpec,heightMeasureSpec);
 
     }
 
+    public int getImgGradientColor1() {
+        return imgGradientColor1;
+
+    }
+
+    public void setImgGradientColor1(int imgGradientColor1) {
+        this.imgGradientColor1 = imgGradientColor1;
+        invalidate();
+
+    }
+
+    public int getImgGradientColor2() {
+        return imgGradientColor2;
+
+    }
+
+    public void setImgGradientColor2(int imgGradientColor2) {
+        this.imgGradientColor2 = imgGradientColor2;
+        invalidate();
+    }
+
+
+    public int getResDrawable() {
+        return resDrawable;
+    }
+
+    public void setResDrawable(int resDrawable) {
+        this.resDrawable = resDrawable;
+        invalidate();
+
+    }
 
     public void setShadowLeft(boolean bShadowLeft) {
         this.bShadowLeft = bShadowLeft;
