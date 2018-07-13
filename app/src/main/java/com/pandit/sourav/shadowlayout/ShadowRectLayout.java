@@ -41,8 +41,8 @@ public class ShadowRectLayout extends LinearLayout {
     private int shadowRight = 1;
     private int shadowBottom = 1;
     private int shadowTop = 1;
-    private int imgGradientColor1 = 0x00FFFFFF;
-    private int imgGradientColor2 = 0x00FFFFFF;
+    private int imgGradientColor1 = -1;
+    private int imgGradientColor2 = -1;
     private boolean bShadowLeft = true;
     private boolean bShadowRight = true;
     private boolean bShadowBottom = true;
@@ -84,8 +84,8 @@ public class ShadowRectLayout extends LinearLayout {
             offSetY = a.getFloat(R.styleable.ShadowRectLayout_offsetY, 3);
             shadowRadius = a.getInt(R.styleable.ShadowRectLayout_shadowRadius, 10);
             resDrawable = a.getInt(R.styleable.ShadowRectLayout_imgBackground, -1);
-            imgGradientColor1 = a.getColor(R.styleable.ShadowRectLayout_imgGradientColor1, 0x00FFFFFF);
-            imgGradientColor2 = a.getColor(R.styleable.ShadowRectLayout_imgGradientColor2, 0x00FFFFFF);
+            imgGradientColor1 = a.getColor(R.styleable.ShadowRectLayout_imgGradientColor1, -1);
+            imgGradientColor2 = a.getColor(R.styleable.ShadowRectLayout_imgGradientColor2, -1);
             baseBackgroundColor = a.getColor(R.styleable.ShadowRectLayout_baseColor, baseBackgroundColor);
             bShadowLeft = a.getBoolean(R.styleable.ShadowRectLayout_shadow_left, true);
             bShadowRight = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Right, true);
@@ -106,6 +106,31 @@ public class ShadowRectLayout extends LinearLayout {
         shadowPaint.setStyle(Paint.Style.FILL);
         shadowPaint.setAntiAlias(true);
     }
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+super.onMeasure(widthMeasureSpec,heightMeasureSpec);
+      /*  final int containerWidth = MeasureSpec.getSize(widthMeasureSpec);
+        final int containerHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        final int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(containerWidth, MeasureSpec.EXACTLY);
+        final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(containerHeight, MeasureSpec.UNSPECIFIED);
+
+        View child;
+        int totalChildHeight = 0;
+
+        for (int i = 0; i < getChildCount(); i++) {
+            child = getChildAt(i);
+
+            if (child == null || child.getVisibility() == View.GONE)
+                continue;
+
+            measureChildWithMargins(child, childWidthMeasureSpec, 0, childHeightMeasureSpec, totalChildHeight);
+
+            totalChildHeight += child.getMeasuredHeight();
+        }
+
+        setMeasuredDimension(containerWidth, totalChildHeight);*/
+    }
 
 
     @Override
@@ -116,24 +141,30 @@ public class ShadowRectLayout extends LinearLayout {
         int top;//= radii * shadowTop + roundCornerRadius / 2;
         int right;//= getWidth() - radii * shadowRight - roundCornerRadius / 2;
         int bottom;//= getHeight() - radii * shadowBottom - roundCornerRadius / 2;
-        if (roundCornerRadius >= getWidth() / 2 && roundCornerRadius >= getHeight() / 2) {
-            left = getWidth() / 4;
-            top = getWidth() / 4;
-            right = getWidth() - getWidth() / 4;
-            bottom = getHeight() - getWidth() / 4;
+    /*    if (roundCornerRadius == getWidth() / 2 && roundCornerRadius == getHeight() / 2) {
+            left = getWidth() / 6;
+            top = getWidth() / 6;
+            right = getWidth() - getWidth() / 6;
+            bottom = getHeight() - getWidth() / 6;
+            roundCornerRadius = getHeight() - getWidth() / 6;
 
-        } /*else if (roundCornerRadius >= getWidth() / 2) {
-            left  =4;
-            top   =4;
-            right =4;
-            bottom=4;
+        } else*/
 
-        } else if (roundCornerRadius >= getHeight() / 2) {
-            left  =2;
-            top   =2;
-            right =2;
-            bottom=2;
-        }*/ else {
+
+        if (getWidth()==getHeight()&&(roundCornerRadius >= getWidth() / 2 || roundCornerRadius <= getHeight() / 2)) {
+            roundCornerRadius=getWidth()/2;
+            left = getWidth() / 6;
+            top = radii * shadowTop +getWidth() / 6;/*+ roundCornerRadius / 2*/;
+            right = getWidth()-getWidth() / 6;
+            bottom = getHeight() - radii * shadowBottom-getWidth() / 6 /*- roundCornerRadius / 2*/;
+
+
+        } else if (roundCornerRadius >= getHeight() / 2 && roundCornerRadius <= getWidth() / 2) {
+            left = radii * shadowLeft + roundCornerRadius / 2;
+            top = getWidth() / 6;
+            right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
+            bottom = getWidth() / 6;
+        } else {
             left = radii * shadowLeft + roundCornerRadius / 2;
             top = radii * shadowTop + roundCornerRadius / 2;
             right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
@@ -141,7 +172,7 @@ public class ShadowRectLayout extends LinearLayout {
 
         }
         if (view != null) {
-            view.layout(left, top, right, bottom);
+                view.layout(left, top, right, bottom);
         }
 
 
@@ -155,7 +186,7 @@ public class ShadowRectLayout extends LinearLayout {
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
 
-        Drawable d = getGradientDrawable(mContext, R.drawable.metting_img,50,0xBC8438C9,0xCBBE235E);
+        Drawable d = getGradientDrawable(mContext, R.drawable.metting_img, roundCornerRadius, -1, 0xCBBE235E);
         if (d != null) {
             d.setBounds((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
             d.draw(canvas);
@@ -234,19 +265,26 @@ public class ShadowRectLayout extends LinearLayout {
         RoundedBitmapDrawable roundedBitmapDrawable = null;
         LayerDrawable layerdrawable = null;
         GradientDrawable roundGradiantDrawable = null;
-        if (imgDrawable < 0) {
+        if (imgDrawable > 0) {
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgDrawable);
             roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
             roundedBitmapDrawable.setCornerRadius(fRadius);
         }
 
 
-        if (imgGradientColor1 != 0x00FFFFFF || imgGradientColor2 != 0x00FFFFFF) {
+        if (color1 != -1 || color2 !=-1) {
 
             roundGradiantDrawable = new GradientDrawable();
             roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
             roundGradiantDrawable.setCornerRadii(new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius});
-            roundGradiantDrawable.setColors(new int[]{color1, color2});
+            if (color1 !=-1 && color2 == -1)
+//                roundGradiantDrawable.setColors(new int[]{color1,0x00FFFFFF});
+                roundGradiantDrawable.setColor(color1);
+            else if (color1 ==-1&& color2 !=-1)
+//                roundGradiantDrawable.setColors(new int[]{0x00FFFFFF,color2});
+                roundGradiantDrawable.setColor(color2);
+            else
+                roundGradiantDrawable.setColors(new int[]{color1, color2});
         }
 
         if (roundedBitmapDrawable != null && roundGradiantDrawable != null) {
@@ -259,7 +297,7 @@ public class ShadowRectLayout extends LinearLayout {
             Drawable[] drawarray = {roundGradiantDrawable};
             layerdrawable = new LayerDrawable(drawarray);
             layerdrawable.setLayerInset(0, 0, 0, 0, 0);
-        }
+        }else
         if (roundedBitmapDrawable != null && roundGradiantDrawable == null) {
             Drawable[] drawarray = {roundedBitmapDrawable};
             layerdrawable = new LayerDrawable(drawarray);
