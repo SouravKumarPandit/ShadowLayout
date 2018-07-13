@@ -164,34 +164,28 @@ public class ShadowRectLayout extends LinearLayout {
         } else if (getHeight() > getWidth()) {
             float scaleBy = (float) getWidth() / (float) getHeight();
             left = (int) (radii * shadowLeft + roundCornerRadius / 3 * scaleBy);
-            top = (int) (radii * shadowTop + roundCornerRadius *scaleBy);
+            top = (int) (radii * shadowTop + (roundCornerRadius+roundCornerRadius/2) *scaleBy);
             right = (int) (getWidth() - radii * shadowRight - roundCornerRadius / 3 * scaleBy);
-            bottom = (int) (getHeight() - radii * shadowBottom - roundCornerRadius *scaleBy);
+            bottom = (int) (getHeight() - radii * shadowBottom - (roundCornerRadius+roundCornerRadius/2)*scaleBy);
 
         } else if (getHeight() < getWidth()) {
             float scaleBy = (float) getHeight() / (float) getWidth();
-            left = (int) (radii * shadowLeft + roundCornerRadius * scaleBy);
+            left = (int) (radii * shadowLeft + (roundCornerRadius+roundCornerRadius/2) * scaleBy);
             top = (int) (radii * shadowTop + roundCornerRadius / 3 * scaleBy);
-            right = (int) (getWidth() - radii * shadowRight - roundCornerRadius * scaleBy);
+            right = (int) (getWidth() - radii * shadowRight - (roundCornerRadius+roundCornerRadius/2)* scaleBy);
             bottom = (int) (getHeight() - radii * shadowBottom - roundCornerRadius / 3 * scaleBy);
 
         } else {
-            left = radii * shadowLeft + roundCornerRadius / 2;
-            top = radii * shadowTop + roundCornerRadius / 2;
-            right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-            bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
+            left = radii * shadowLeft + roundCornerRadius / 3;
+            top = radii * shadowTop + roundCornerRadius / 3;
+            right = getWidth() - radii * shadowRight - roundCornerRadius / 3;
+            bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 3;
 
         }
 
-//        if (getHeight()>getWidth());else {}
-//        if (getHeight()<getWidth());else {}
-
-//        left = radii * shadowLeft + roundCornerRadius / 2;
-//        top = radii * shadowTop + roundCornerRadius / 2;
-//        right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-//        bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
         if (view != null) {
             view.layout(left, top, right, bottom);
+            this.setPadding(left,top,left,top);
         }
 
 
