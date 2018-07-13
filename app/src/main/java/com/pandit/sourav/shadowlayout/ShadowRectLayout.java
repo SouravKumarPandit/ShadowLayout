@@ -147,84 +147,49 @@ public class ShadowRectLayout extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         View view = getChildAt(0);
-        int radii = (int) (shadowRadius * 1.8);
-        int left;//= radii * shadowLeft + roundCornerRadius / 2;
-        int top;//= radii * shadowTop + roundCornerRadius / 2;
-        int right;//= getWidth() - radii * shadowRight - roundCornerRadius / 2;
-        int bottom;//= getHeight() - radii * shadowBottom - roundCornerRadius / 2;
         renderRoundCornerRadius(roundCornerRadius);
+        int radii = (int) (shadowRadius * 1.8);
+        int left;
+        int top;
+        int right;
+        int bottom;
 
-      /*  if (getWidth() / 2 == getHeight() / 2 && (getWidth() / 2 <= roundCornerRadius || getHeight() / 2 <= roundCornerRadius)) {
 
-            roundCornerRadius = (int) scale(roundCornerRadius, getWidth(), 0, 0, getWidth() / 2);
-
+        if (getHeight() == getWidth()) {
             left = getWidth() / 6;
-            top = getHeight() / 6;
-            right = getWidth() - getWidth() / 6;
-            bottom = getHeight() - getHeight() / 6;
-
-        } else if (getWidth() / 2 <= roundCornerRadius && getHeight() / 2 <= roundCornerRadius) {
-            if (getWidth() / 2 > getHeight() / 2) {
-                roundCornerRadius = (int) scale(roundCornerRadius, 0, getWidth()/2, 0, getWidth() / 2);
-                left = radii * shadowLeft + roundCornerRadius / 2;
-                top = radii * shadowTop + roundCornerRadius / 2;
-                right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-                bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
-            } else {
-                roundCornerRadius = (int) scale(roundCornerRadius, 0, getHeight() / 2, 0, getHeight() / 2);
-                left = radii * shadowLeft + roundCornerRadius / 2;
-                top = radii * shadowTop + roundCornerRadius / 2;
-                right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-                bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
-            }
-        } else if (getHeight() / 2 <= roundCornerRadius) {
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, getHeight() / 2, 0, getHeight() / 2);
-            left = radii * shadowLeft + getWidth() / 6;
-            top = radii * shadowTop;
-            right = getWidth() - getWidth() / 6;
-            bottom = getHeight() - radii * shadowBottom;
-        } else if (getWidth() / 2 <= roundCornerRadius) {
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, getWidth() / 2, 0, getWidth() / 2);
-            left = radii * shadowLeft + roundCornerRadius / 2;
             top = getWidth() / 6;
-            right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-            bottom = getHeight() - getHeight() / 6;
+            right = getWidth() - getWidth() / 6;
+            bottom = getHeight() - getWidth() / 6;
+
+        } else if (getHeight() > getWidth()) {
+            float scaleBy = (float) getWidth() / (float) getHeight();
+            left = (int) (radii * shadowLeft + roundCornerRadius / 3 * scaleBy);
+            top = (int) (radii * shadowTop + roundCornerRadius *scaleBy);
+            right = (int) (getWidth() - radii * shadowRight - roundCornerRadius / 3 * scaleBy);
+            bottom = (int) (getHeight() - radii * shadowBottom - roundCornerRadius *scaleBy);
+
+        } else if (getHeight() < getWidth()) {
+            float scaleBy = (float) getHeight() / (float) getWidth();
+            left = (int) (radii * shadowLeft + roundCornerRadius * scaleBy);
+            top = (int) (radii * shadowTop + roundCornerRadius / 3 * scaleBy);
+            right = (int) (getWidth() - radii * shadowRight - roundCornerRadius * scaleBy);
+            bottom = (int) (getHeight() - radii * shadowBottom - roundCornerRadius / 3 * scaleBy);
+
         } else {
             left = radii * shadowLeft + roundCornerRadius / 2;
             top = radii * shadowTop + roundCornerRadius / 2;
             right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
             bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
+
         }
-*/
 
+//        if (getHeight()>getWidth());else {}
+//        if (getHeight()<getWidth());else {}
 
-       /* if (getWidth() == getHeight() && (roundCornerRadius >= getWidth() / 2 || roundCornerRadius <= getHeight() / 2)) {
-            roundCornerRadius = getWidth() / 2;
-            left = getWidth() / 6;
-            top = radii * shadowTop + getWidth() / 6;*//*+ roundCornerRadius / 2*//*
-            ;
-            right = getWidth() - getWidth() / 6;
-            bottom = getHeight() - radii * shadowBottom - getWidth() / 6 *//*- roundCornerRadius / 2*//*;
-
-
-        }*//* else if (roundCornerRadius >= getHeight() / 2 && roundCornerRadius <= getWidth() / 2) {
-            roundCornerRadius = getWidth() / 2;
-
-            left = radii * shadowLeft + roundCornerRadius / 2;
-            top = getWidth() / 6;
-            right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-            bottom = getWidth() / 6;
-        } *//* else {*/
 //        left = radii * shadowLeft + roundCornerRadius / 2;
 //        top = radii * shadowTop + roundCornerRadius / 2;
 //        right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
 //        bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
-
-//        }
-        left = radii * shadowLeft + roundCornerRadius / 2;
-        top = radii * shadowTop + roundCornerRadius / 2;
-        right = getWidth() - radii * shadowRight - roundCornerRadius / 2;
-        bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 2;
         if (view != null) {
             view.layout(left, top, right, bottom);
         }
@@ -233,16 +198,16 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     private void renderRoundCornerRadius(int roundCornerRadius) {
-        if (roundCornerRadius > 1000)
-            roundCornerRadius = 1000;
+        if (roundCornerRadius > 100)
+            roundCornerRadius = 100;
         else if (roundCornerRadius < 0)
             roundCornerRadius = 0;
         if (getWidth() == getHeight())
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 1000, 0, getWidth() / 2);
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth());
         else if (getWidth() < getHeight())
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 1000, 0, getWidth() / 2);
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth());
         else
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 1000, 0, getHeight() / 2);
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getHeight());
         this.roundCornerRadius = roundCornerRadius;
 
     }

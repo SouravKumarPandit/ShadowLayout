@@ -39,18 +39,18 @@ public class MainActivity extends AppCompatActivity {
 
         ShadowRectLayout rectLayout = new ShadowRectLayout(this);
         rectLayout.setClipToPadding(false);
-        rectLayout.setLayoutParams(new LinearLayout.LayoutParams((int) (getScreenWidth() / 1.3), (int) (getScreenWidth() / 1.3)));
+//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams((int) (getScreenWidth() / 1.2), 150));
 //        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(200, ViewGroup.LayoutParams.MATCH_PARENT));
         rectLayout.setShadowRadius(dpToPixel(5));
 //        rectLayout.setShadowColor(Color.RED);
         rectLayout.setShadowColor(Color.GRAY);
         rectLayout.setOffSetX(0);
         rectLayout.setOffSetY(0);
-        rectLayout.setRoundCornerRadius(200);
-        rectLayout.setResDrawable(R.drawable.metting_img);
-        rectLayout.setImgGradientColor1(0x8A9F76C4);
-        rectLayout.setImgGradientColor2(0x0097CC52);
+        rectLayout.setRoundCornerRadius(500);
+//        rectLayout.setResDrawable(R.drawable.metting_img);
+        rectLayout.setImgGradientColor1(0xFF9F76C4);
+//        rectLayout.setImgGradientColor2(0x0097CC52);
         linearLayout.addView(rectLayout);
 
 
