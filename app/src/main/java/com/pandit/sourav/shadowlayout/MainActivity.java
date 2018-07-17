@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         rectLayout.setShadowColor(Color.GRAY);
         rectLayout.setOffSetX(0);
         rectLayout.setOffSetY(0);
-        rectLayout.setRoundCornerRadius(65);
+        rectLayout.setRoundCornerRadius(100);
 //        rectLayout.setResDrawable(R.drawable.metting_img);
         rectLayout.setImgGradientColor1(0xFF9F76C4);
 //        rectLayout.setImgGradientColor2(0x0097CC52);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayout1.addView(getlinearLayout());
         linearLayout1.addView(getlinearLayout());
         linearLayout1.addView(getlinearLayout());
-        linearLayout1.addView(getlinearLayout());
+//        linearLayout1.addView(getlinearLayout());
 
 
         rectLayout.addView(linearLayout1);
@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         linearLayout1.setBackgroundColor(0x7995CFE7);
 
 
-        linearLayout1.addView(getTextView());
         linearLayout1.addView(getTextView());
         linearLayout1.addView(getTextView());
         linearLayout1.addView(getTextView());

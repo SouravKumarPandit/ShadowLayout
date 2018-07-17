@@ -1,7 +1,6 @@
 package com.pandit.sourav.shadowlayout;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,11 +13,9 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,7 +94,6 @@ public class ShadowRectLayout extends LinearLayout {
 //            if (false/*todo change it to autoColor true*/)
 //            shadowColor=getDarkerColor(shadowColor);
         }
-        renderRoundCornerRadius(roundCornerRadius);
         intitView(context);
 
     }
@@ -111,6 +107,7 @@ public class ShadowRectLayout extends LinearLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        renderRoundCornerRadius(roundCornerRadius);
         View view = getChildAt(0);
         int radii = (int) (shadowRadius * 1.8);
         int left;
@@ -139,7 +136,7 @@ public class ShadowRectLayout extends LinearLayout {
             top = (int) (radii * shadowTop );
             right = (int) (getWidth() - (radii * shadowRight + roundCornerRadius*scaleBy)*2);
             bottom = (int) (getHeight() - radii * shadowBottom );
-            this.setPadding(left*2,top,left*2,top);
+            this.setPadding(left,top,left,top);
 
         }
 
@@ -152,17 +149,17 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     private void renderRoundCornerRadius(int roundCornerRadius) {
-        if (roundCornerRadius > 60)
-            roundCornerRadius = 60;
+        if (roundCornerRadius > 100)
+            roundCornerRadius = 100;
         else if (roundCornerRadius < 0)
             roundCornerRadius = 0;
 
         if (getWidth() == getHeight())
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth()/4);
+            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth());
         else if (getWidth() < getHeight())
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth()/4);
+            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth());
         else
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getHeight()/4);
+            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getHeight());
         this.roundCornerRadius = roundCornerRadius;
 
     }
@@ -306,7 +303,7 @@ public class ShadowRectLayout extends LinearLayout {
         invalidate();
     }
 
-    public double scale(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
+    public double scaleRange(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
         return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
     }
 
