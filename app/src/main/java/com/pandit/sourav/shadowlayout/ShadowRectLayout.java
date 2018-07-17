@@ -97,6 +97,7 @@ public class ShadowRectLayout extends LinearLayout {
 //            if (false/*todo change it to autoColor true*/)
 //            shadowColor=getDarkerColor(shadowColor);
         }
+        renderRoundCornerRadius(roundCornerRadius);
         intitView(context);
 
     }
@@ -106,48 +107,11 @@ public class ShadowRectLayout extends LinearLayout {
         shadowPaint.setStyle(Paint.Style.FILL);
         shadowPaint.setAntiAlias(true);
     }
-/*
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        View childView = getChildAt(0);
-        if (childView != null) {
-
-            // Measure icon.
-            measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
-
-            // Figure out how much width the icon used.
-            MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();
-            int widthUsed = childView.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
-
-
-            // Figure out how much total space the icon used.
-            int iconWidth = childView.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
-            int iconHeight = childView.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
-
-
-            // The width taken by the children + padding.
-            int width = getPaddingTop() + getPaddingBottom() +
-                    iconWidth + Math.max(0, iconWidth);
-            // The height taken by the children + padding.
-            int height = getPaddingTop() + getPaddingBottom() +
-                    Math.max(0, iconHeight);
-
-            // Reconcile the measured dimensions with the this view's constraints and
-            // set the final measured width and height.
-            setMeasuredDimension(
-                    resolveSize(width, widthMeasureSpec),
-                    resolveSize(height, heightMeasureSpec)
-            );
-        } else super.setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
-
-    }*/
 
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         View view = getChildAt(0);
-        renderRoundCornerRadius(roundCornerRadius);
         int radii = (int) (shadowRadius * 1.8);
         int left;
         int top;
@@ -160,48 +124,45 @@ public class ShadowRectLayout extends LinearLayout {
             top = getWidth() / 6;
             right = getWidth() - getWidth() / 6;
             bottom = getHeight() - getWidth() / 6;
-
         } else if (getHeight() > getWidth()) {
             float scaleBy = (float) getWidth() / (float) getHeight();
-            left = (int) (radii * shadowLeft + roundCornerRadius / 3 * scaleBy);
-            top = (int) (radii * shadowTop + (roundCornerRadius+roundCornerRadius/2) *scaleBy);
-            right = (int) (getWidth() - radii * shadowRight - roundCornerRadius / 3 * scaleBy);
-            bottom = (int) (getHeight() - radii * shadowBottom - (roundCornerRadius+roundCornerRadius/2)*scaleBy);
+            left = (int) (radii * shadowLeft );
+            top = (int) (radii * shadowLeft + roundCornerRadius*scaleBy)*2;
+            right = (int) (getWidth() - radii * shadowRight);
+            bottom = (int) (getHeight() - (radii * shadowLeft + roundCornerRadius*scaleBy)*2);
+            this.setPadding(left,top,left,top);
 
-        } else if (getHeight() < getWidth()) {
+
+        } else /*if (getHeight() < getWidth()) */ {
             float scaleBy = (float) getHeight() / (float) getWidth();
-            left = (int) (radii * shadowLeft + (roundCornerRadius+roundCornerRadius/2) * scaleBy);
-            top = (int) (radii * shadowTop + roundCornerRadius / 3 * scaleBy);
-            right = (int) (getWidth() - radii * shadowRight - (roundCornerRadius+roundCornerRadius/2)* scaleBy);
-            bottom = (int) (getHeight() - radii * shadowBottom - roundCornerRadius / 3 * scaleBy);
-
-        } else {
-            left = radii * shadowLeft + roundCornerRadius / 3;
-            top = radii * shadowTop + roundCornerRadius / 3;
-            right = getWidth() - radii * shadowRight - roundCornerRadius / 3;
-            bottom = getHeight() - radii * shadowBottom - roundCornerRadius / 3;
+            left = (int) (radii * shadowLeft + roundCornerRadius*scaleBy)*2;
+            top = (int) (radii * shadowTop );
+            right = (int) (getWidth() - (radii * shadowRight + roundCornerRadius*scaleBy)*2);
+            bottom = (int) (getHeight() - radii * shadowBottom );
+            this.setPadding(left*2,top,left*2,top);
 
         }
 
         if (view != null) {
             view.layout(left, top, right, bottom);
-            this.setPadding(left,top,left,top);
+//            this.setPadding(left,top,left,top);
         }
 
 
     }
 
     private void renderRoundCornerRadius(int roundCornerRadius) {
-        if (roundCornerRadius > 100)
-            roundCornerRadius = 100;
+        if (roundCornerRadius > 60)
+            roundCornerRadius = 60;
         else if (roundCornerRadius < 0)
             roundCornerRadius = 0;
+
         if (getWidth() == getHeight())
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth());
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth()/4);
         else if (getWidth() < getHeight())
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth());
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getWidth()/4);
         else
-            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getHeight());
+            roundCornerRadius = (int) scale(roundCornerRadius, 0, 100, 0, getHeight()/4);
         this.roundCornerRadius = roundCornerRadius;
 
     }

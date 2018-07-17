@@ -39,36 +39,28 @@ public class MainActivity extends AppCompatActivity {
 
         ShadowRectLayout rectLayout = new ShadowRectLayout(this);
         rectLayout.setClipToPadding(false);
-//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams((int) (getScreenWidth() / 1.2), 150));
-//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(200, ViewGroup.LayoutParams.MATCH_PARENT));
+
+//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams((int) (getScreenWidth() / 1.3), (int) (getScreenWidth() / 1.3)));
+        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(getScreenWidth(), ViewGroup  .LayoutParams.MATCH_PARENT));
         rectLayout.setShadowRadius(dpToPixel(5));
 //        rectLayout.setShadowColor(Color.RED);
         rectLayout.setShadowColor(Color.GRAY);
         rectLayout.setOffSetX(0);
         rectLayout.setOffSetY(0);
-        rectLayout.setRoundCornerRadius(500);
+        rectLayout.setRoundCornerRadius(65);
 //        rectLayout.setResDrawable(R.drawable.metting_img);
         rectLayout.setImgGradientColor1(0xFF9F76C4);
 //        rectLayout.setImgGradientColor2(0x0097CC52);
         linearLayout.addView(rectLayout);
-
-
-        LinearLayout linearLayout1 = new LinearLayout(this);
-//        linearLayout1.setGravity(Gravity.CENTER);
-        linearLayout1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout1.setBackgroundColor(0x7995CFE7);
-
-
-        linearLayout1.addView(getTextView());
-//        linearLayout1.addView(getTextView());
-//        linearLayout1.addView(getTextView());
-//        linearLayout1.addView(getTextView());
-//        linearLayout1.addView(getTextView());
-//        linearLayout1.addView(getTextView());
-//        linearLayout1.addView(getTextView());
-//        linearLayout1.addView(getTextView());
+        LinearLayout linearLayout1=new LinearLayout(this);
+        linearLayout1.setOrientation(LinearLayout.VERTICAL);
+//        linearLayout1.setBackgroundColor(0xffb54545);
+        linearLayout1.setGravity(Gravity.CENTER);
+        linearLayout1.addView(getlinearLayout());
+        linearLayout1.addView(getlinearLayout());
+        linearLayout1.addView(getlinearLayout());
+        linearLayout1.addView(getlinearLayout());
 
 
         rectLayout.addView(linearLayout1);
@@ -116,5 +108,23 @@ public class MainActivity extends AppCompatActivity {
         textView.setBackground(gradientDrawable);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         return textView;
+    }
+
+    public View getlinearLayout() {
+
+        LinearLayout linearLayout1 = new LinearLayout(this);
+//        linearLayout1.setGravity(Gravity.CENTER);
+        linearLayout1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        linearLayout1.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout1.setGravity(Gravity.CENTER);
+        linearLayout1.setBackgroundColor(0x7995CFE7);
+
+
+        linearLayout1.addView(getTextView());
+        linearLayout1.addView(getTextView());
+        linearLayout1.addView(getTextView());
+        linearLayout1.addView(getTextView());
+        linearLayout1.addView(getTextView());
+        return linearLayout1;
     }
 }
