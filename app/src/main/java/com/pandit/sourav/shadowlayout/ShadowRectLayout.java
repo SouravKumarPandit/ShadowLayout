@@ -59,7 +59,7 @@ public class ShadowRectLayout extends LinearLayout {
 
     static final double COS_45 = Math.cos(Math.toRadians(45));
 
-    static final float SHADOW_MULTIPLIER = 1.5f;
+    static final float SHADOW_MULTIPLIER = 1.8f;
 
     static final float SHADOW_TOP_SCALE = 0.25f;
     static final float SHADOW_HORIZ_SCALE = 0.5f;
@@ -127,7 +127,7 @@ public class ShadowRectLayout extends LinearLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         renderRoundCornerRadius(roundCornerRadius);
         View view = getChildAt(0);
-        int radii = (int) (shadowRadius * 1.5);
+        int radii = (int) (shadowRadius * SHADOW_MULTIPLIER);
         int left;
         int top;
         int right;
@@ -149,7 +149,7 @@ public class ShadowRectLayout extends LinearLayout {
             int hOffset = (int) Math.ceil(calculateHorizontalPadding(radii, roundCornerRadius,
                     mAddPaddingForCorners));
             this.setPadding(left, hOffset+top, left, hOffset+top);
-            view.layout(left, top+hOffset, right,bottom-hOffset);
+            view.layout(left+view.getPaddingLeft(), top+hOffset+view.getPaddingTop(), right+view.getPaddingRight(),bottom-hOffset+view.getPaddingBottom());
 
         } else /*if (getHeight() < getWidth()) */ {
             float scaleBy = (float) getHeight() / (float) getWidth();
@@ -160,7 +160,7 @@ public class ShadowRectLayout extends LinearLayout {
             int vOffset = (int) Math.ceil(calculateVerticalPadding(radii, roundCornerRadius,
                     mAddPaddingForCorners));
             this.setPadding(left+vOffset, top, left+vOffset, top);
-            view.layout(left+vOffset,top, right-vOffset, bottom);
+            view.layout(left+vOffset+view.getPaddingLeft(),top+view.getPaddingTop(), right-vOffset+view.getPaddingRight(), bottom+view.getPaddingBottom());
         }
     }
 
@@ -221,79 +221,10 @@ public class ShadowRectLayout extends LinearLayout {
             return maxShadowSize;
         }
     }
-
-
- /*   @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int maxHeight = 0;
-        int maxWidth = 0;
-        int childState = 0;
-//        int radii = (int) (shadowRadius * 1.8);
-//        int iShadowleft = radii * shadowLeft;
-//        int iShadowtop = radii * shadowLeft;
-//        int iShadowright = getWidth() - radii * shadowRight;
-//        int iShadowbottom = getHeight() - radii * shadowLeft;
-
-        setMeasuredDimension(getDefaultSize(0, widthMeasureSpec), getDefaultSize(0, heightMeasureSpec));
-        boolean shadowMeasureWidthMatchParent = getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT;
-        boolean shadowMeasureHeightMatchParent = getLayoutParams().height == ViewGroup.LayoutParams.MATCH_PARENT;
-        int widthSpec = widthMeasureSpec;
-        if (shadowMeasureWidthMatchParent) {
-            int childWidthSize = getMeasuredWidth()*//* - iShadowleft - iShadowright*//*;
-            widthSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
-        }
-        int heightSpec = heightMeasureSpec;
-        if (shadowMeasureHeightMatchParent) {
-            int childHeightSize = getMeasuredHeight() *//*- iShadowtop - iShadowbottom*//*;
-            heightSpec = MeasureSpec.makeMeasureSpec(childHeightSize, MeasureSpec.EXACTLY);
-        }
-        View child = getChildAt(0);
-        if (child.VISIBLE != View.GONE) {
-            measureChildWithMargins(child, widthSpec, 0, heightSpec, 0);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            if (shadowMeasureWidthMatchParent) {
-                Math.max(maxWidth,
-                        maxWidth = child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
-            } else {
-                Math.max(maxWidth,
-                        maxWidth = child.getMeasuredWidth() *//*+ iShadowleft + iShadowright *//*+ lp.leftMargin + lp.rightMargin);
-            }
-            if (shadowMeasureHeightMatchParent)
-                Math.max(maxHeight,
-                        maxHeight =
-                                child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
-            else
-                Math.max(maxHeight,
-                        maxHeight =
-                                child.getMeasuredHeight() *//*+ iShadowbottom + iShadowbottom *//*+ lp.topMargin + lp.bottomMargin);
-
-
-            childState = View.combineMeasuredStates(childState, child.getMeasuredState());
-        }
-        maxWidth += getPaddingLeft() + getPaddingRight();
-        maxHeight += getPaddingTop() + getPaddingBottom();
-
-        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
-        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
-        Drawable drawable = getBackground();
-        if (drawable != null) {
-            maxHeight = Math.max(maxHeight, drawable.getMinimumHeight());
-            maxWidth = Math.max(maxWidth, drawable.getMinimumWidth());
-        }
-        setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureWidthMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
-//        setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureHeightMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
-//   this.setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureWidthMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
-
-
-    }*/
-
-
-//            this.setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureWidthMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         shadowPaint.setShadowLayer(shadowRadius, offSetX, offSetY, this.shadowColor);
-        float rectValue = (float) (shadowRadius * 1.5);
+        float rectValue = (float) (shadowRadius * SHADOW_MULTIPLIER);
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
 
