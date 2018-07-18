@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.MarginLayoutParams linearLayout1Param=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        linearLayout1Param.setMargins(50,50,50,50);
         linearLayout1.setOrientation(LinearLayout.VERTICAL);
-//        linearLayout1.setPadding(0,50,0,0);
+//        linearLayout1.setPadding(0,60,0,0);
 //        linearLayout1.setBackgroundColor(0x62DEC87A);
         linearLayout1.setGravity(Gravity.CENTER);
         linearLayout1.addView(getlinearLayout());

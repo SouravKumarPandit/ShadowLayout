@@ -139,7 +139,7 @@ public class ShadowRectLayout extends LinearLayout {
             top = getWidth() / 6;
             right = getWidth() - getWidth() / 6;
             bottom = getHeight() - getWidth() / 6;
-            view.layout(left, top, right,bottom);
+            view.layout(left, top, right, bottom);
         } else if (getHeight() > getWidth()) {
             float scaleBy = (float) getWidth() / (float) getHeight();
             left = radii * shadowLeft;
@@ -148,8 +148,8 @@ public class ShadowRectLayout extends LinearLayout {
             bottom = getHeight() - radii * shadowLeft;
             int hOffset = (int) Math.ceil(calculateHorizontalPadding(radii, roundCornerRadius,
                     mAddPaddingForCorners));
-            this.setPadding(left, hOffset+top, left, hOffset+top);
-            view.layout(left+view.getPaddingLeft(), top+hOffset+view.getPaddingTop(), right+view.getPaddingRight(),bottom-hOffset+view.getPaddingBottom());
+            this.setPadding(left, hOffset + top, left, hOffset + top);
+            view.layout(left, top + hOffset, right, bottom - hOffset);
 
         } else /*if (getHeight() < getWidth()) */ {
             float scaleBy = (float) getHeight() / (float) getWidth();
@@ -159,8 +159,8 @@ public class ShadowRectLayout extends LinearLayout {
             bottom = getHeight() - radii * shadowBottom;
             int vOffset = (int) Math.ceil(calculateVerticalPadding(radii, roundCornerRadius,
                     mAddPaddingForCorners));
-            this.setPadding(left+vOffset, top, left+vOffset, top);
-            view.layout(left+vOffset+view.getPaddingLeft(),top+view.getPaddingTop(), right-vOffset+view.getPaddingRight(), bottom+view.getPaddingBottom());
+            this.setPadding(left + vOffset, top, left + vOffset, top);
+            view.layout(left + vOffset, top, right - vOffset, bottom);
         }
     }
 
@@ -205,7 +205,7 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     public float calculateVerticalPadding(float maxShadowSize, float cornerRadius,
-                                                 boolean addPaddingForCorners) {
+                                          boolean addPaddingForCorners) {
         if (addPaddingForCorners) {
             return (float) (maxShadowSize * SHADOW_MULTIPLIER + (1 - COS_45) * cornerRadius);
         } else {
@@ -214,13 +214,14 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     public float calculateHorizontalPadding(float maxShadowSize, float cornerRadius,
-                                                   boolean addPaddingForCorners) {
+                                            boolean addPaddingForCorners) {
         if (addPaddingForCorners) {
             return (float) (maxShadowSize + (1 - COS_45) * cornerRadius);
         } else {
             return maxShadowSize;
         }
     }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         shadowPaint.setShadowLayer(shadowRadius, offSetX, offSetY, this.shadowColor);
