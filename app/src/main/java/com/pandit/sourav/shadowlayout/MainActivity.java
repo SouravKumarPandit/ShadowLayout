@@ -42,24 +42,21 @@ public class MainActivity extends AppCompatActivity {
 //        rectLayout.setLayoutParams(new LinearLayout.LayoutParams((int) (getScreenWidth() / 1.3), (int) (getScreenWidth() / 1.3)));
         rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 //        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(getScreenWidth(), ViewGroup  .LayoutParams.MATCH_PARENT));
-        rectLayout.setShadowRadius(dpToPixel(15));
+        rectLayout.setShadowRadius(dpToPixel(5));
 //        rectLayout.setShadowColor(Color.RED);
-        rectLayout.setShadowColor(Color.GRAY);
-        rectLayout.setOffSetX(-5);
-        rectLayout.setOffSetY(5);
-        rectLayout.setRoundCornerRadius(10);
+        rectLayout.setShadowColor(Color.BLACK);
+        rectLayout.setOffSetX(0);
+        rectLayout.setOffSetY(0);
+        rectLayout.setRoundCornerRadius(100);
 //        rectLayout.setResDrawable(R.drawable.metting_img);
 //        rectLayout.setImgGradientColor1(0x5b9F76C4);
 //        rectLayout.setImgGradientColor2(0x0097CC52);
-        linearLayout.addView(rectLayout);
         LinearLayout linearLayout1=new LinearLayout(this);
         LinearLayout.MarginLayoutParams linearLayout1Param=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        linearLayout1Param.setMargins(50,50,50,50);
         linearLayout1.setOrientation(LinearLayout.VERTICAL);
-        linearLayout1.setBackgroundColor(0x62DEC87A);
+//        linearLayout1.setBackgroundColor(0x62DEC87A);
         linearLayout1.setGravity(Gravity.CENTER);
-        linearLayout1.addView(getlinearLayout());
-        linearLayout1.addView(getlinearLayout());
         linearLayout1.addView(getlinearLayout());
         linearLayout1.addView(getlinearLayout());
         linearLayout1.addView(getlinearLayout());
@@ -68,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayout1.addView(getlinearLayout());
 
         rectLayout.addView(linearLayout1);
+        linearLayout.addView(rectLayout);
 
 
         setContentView(linearLayout);
@@ -107,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         gradientDrawable.setCornerRadius(50);
-        gradientDrawable.setColor(0x96FFFFFF);
+        gradientDrawable.setColor(0x96bedeFF);
 //        textView.setBackgroundColor(0x77E27177);
-//        textView.setBackground(gradientDrawable);
+        textView.setBackground(gradientDrawable);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         return textView;
     }
@@ -127,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         linearLayout1.addView(getTextView());
-        linearLayout1.addView(getTextView());
-        linearLayout1.addView(getTextView());
+//        linearLayout1.addView(getTextView());
+//        linearLayout1.addView(getTextView());
 //        linearLayout1.addView(getTextView());
 //        linearLayout1.addView(getTextView());
 //        linearLayout1.addView(getTextView());

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -45,7 +46,6 @@ public class ShadowRectLayout extends LinearLayout {
     private boolean bShadowLeft = true;
     private boolean bShadowRight = true;
     private boolean bShadowBottom = true;
-
     private boolean bShadowTop = true;
     private int resDrawable = -1;
     private int shadowElevationLeft = 50;
@@ -54,6 +54,17 @@ public class ShadowRectLayout extends LinearLayout {
     private int shadowElevationBottom = 50;
     protected int mViewWidth;
     protected int mViewHeight;
+    private int maxWidth;
+
+
+    static final double COS_45 = Math.cos(Math.toRadians(45));
+
+    static final float SHADOW_MULTIPLIER = 1.5f;
+
+    static final float SHADOW_TOP_SCALE = 0.25f;
+    static final float SHADOW_HORIZ_SCALE = 0.5f;
+    static final float SHADOW_BOTTOM_SCALE = 1f;
+    private boolean mAddPaddingForCorners = true;
 
     public ShadowRectLayout(Context mContext) {
         super(mContext);
@@ -111,11 +122,12 @@ public class ShadowRectLayout extends LinearLayout {
         shadowPaint.setAntiAlias(true);
     }
 
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         renderRoundCornerRadius(roundCornerRadius);
         View view = getChildAt(0);
-        int radii = (int) (shadowRadius * 1.8);
+        int radii = (int) (shadowRadius * 1.5);
         int left;
         int top;
         int right;
@@ -127,27 +139,29 @@ public class ShadowRectLayout extends LinearLayout {
             top = getWidth() / 6;
             right = getWidth() - getWidth() / 6;
             bottom = getHeight() - getWidth() / 6;
+            view.layout(left, top, right,bottom);
         } else if (getHeight() > getWidth()) {
             float scaleBy = (float) getWidth() / (float) getHeight();
             left = radii * shadowLeft;
             top = radii * shadowLeft;
             right = getWidth() - radii * shadowRight;
             bottom = getHeight() - radii * shadowLeft;
+            int hOffset = (int) Math.ceil(calculateHorizontalPadding(radii, roundCornerRadius,
+                    mAddPaddingForCorners));
+            this.setPadding(left, hOffset+top, left, hOffset+top);
+            view.layout(left, top+hOffset, right,bottom-hOffset);
+
         } else /*if (getHeight() < getWidth()) */ {
             float scaleBy = (float) getHeight() / (float) getWidth();
             left = radii * shadowLeft;
             top = radii * shadowTop;
             right = getWidth() - radii * shadowRight;
             bottom = getHeight() - radii * shadowBottom;
+            int vOffset = (int) Math.ceil(calculateVerticalPadding(radii, roundCornerRadius,
+                    mAddPaddingForCorners));
+            this.setPadding(left+vOffset, top, left+vOffset, top);
+            view.layout(left+vOffset,top, right-vOffset, bottom);
         }
-
-        if (view != null) {
-            view.layout(left, top, right, bottom);
-            this.setPadding(left, top, left, top);
-
-        }
-
-
     }
 
 
@@ -166,6 +180,48 @@ public class ShadowRectLayout extends LinearLayout {
         this.roundCornerRadius = roundCornerRadius;
 
     }
+
+    public boolean getPadding(Rect padding) {
+        int vOffset = (int) Math.ceil(calculateVerticalPadding(25, roundCornerRadius,
+                mAddPaddingForCorners));
+        int hOffset = (int) Math.ceil(calculateHorizontalPadding(25, roundCornerRadius,
+                mAddPaddingForCorners));
+        padding.set(hOffset, vOffset, hOffset, vOffset);
+        return true;
+    }
+
+    void setShadowSize(float shadowSize, float maxShadowSize) {
+        if (shadowSize < 0 || maxShadowSize < 0) {
+            throw new IllegalArgumentException("invalid shadow size");
+        }
+        shadowSize = toEven(shadowSize);
+        maxShadowSize = toEven(maxShadowSize);
+
+    }
+
+    private static int toEven(float value) {
+        int i = Math.round(value);
+        return (i % 2 == 1) ? i - 1 : i;
+    }
+
+    public float calculateVerticalPadding(float maxShadowSize, float cornerRadius,
+                                                 boolean addPaddingForCorners) {
+        if (addPaddingForCorners) {
+            return (float) (maxShadowSize * SHADOW_MULTIPLIER + (1 - COS_45) * cornerRadius);
+        } else {
+            return maxShadowSize * SHADOW_MULTIPLIER;
+        }
+    }
+
+    public float calculateHorizontalPadding(float maxShadowSize, float cornerRadius,
+                                                   boolean addPaddingForCorners) {
+        if (addPaddingForCorners) {
+            return (float) (maxShadowSize + (1 - COS_45) * cornerRadius);
+        } else {
+            return maxShadowSize;
+        }
+    }
+
 
  /*   @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -237,7 +293,7 @@ public class ShadowRectLayout extends LinearLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         shadowPaint.setShadowLayer(shadowRadius, offSetX, offSetY, this.shadowColor);
-        float rectValue = (float) (shadowRadius * 1.8);
+        float rectValue = (float) (shadowRadius * 1.5);
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
 
