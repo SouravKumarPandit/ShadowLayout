@@ -19,6 +19,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 public class ShadowRectLayout extends LinearLayout {
@@ -47,6 +48,12 @@ public class ShadowRectLayout extends LinearLayout {
 
     private boolean bShadowTop = true;
     private int resDrawable = -1;
+    private int shadowElevationLeft = 50;
+    private int shadowElevationRight = 20;
+    private int shadowElevationTop = 10;
+    private int shadowElevationBottom = 50;
+    protected int mViewWidth;
+    protected int mViewHeight;
 
     public ShadowRectLayout(Context mContext) {
         super(mContext);
@@ -104,7 +111,6 @@ public class ShadowRectLayout extends LinearLayout {
         shadowPaint.setAntiAlias(true);
     }
 
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         renderRoundCornerRadius(roundCornerRadius);
@@ -123,30 +129,27 @@ public class ShadowRectLayout extends LinearLayout {
             bottom = getHeight() - getWidth() / 6;
         } else if (getHeight() > getWidth()) {
             float scaleBy = (float) getWidth() / (float) getHeight();
-            left = (int) (radii * shadowLeft );
-            top = (int) (radii * shadowLeft + roundCornerRadius*scaleBy)*2;
-            right = (int) (getWidth() - radii * shadowRight);
-            bottom = (int) (getHeight() - (radii * shadowLeft + roundCornerRadius*scaleBy)*2);
-            this.setPadding(left,top,left,top);
-
-
+            left = radii * shadowLeft;
+            top = radii * shadowLeft;
+            right = getWidth() - radii * shadowRight;
+            bottom = getHeight() - radii * shadowLeft;
         } else /*if (getHeight() < getWidth()) */ {
             float scaleBy = (float) getHeight() / (float) getWidth();
-            left = (int) (radii * shadowLeft + roundCornerRadius*scaleBy)*2;
-            top = (int) (radii * shadowTop );
-            right = (int) (getWidth() - (radii * shadowRight + roundCornerRadius*scaleBy)*2);
-            bottom = (int) (getHeight() - radii * shadowBottom );
-            this.setPadding(left,top,left,top);
-
+            left = radii * shadowLeft;
+            top = radii * shadowTop;
+            right = getWidth() - radii * shadowRight;
+            bottom = getHeight() - radii * shadowBottom;
         }
 
         if (view != null) {
             view.layout(left, top, right, bottom);
-//            this.setPadding(left,top,left,top);
+            this.setPadding(left, top, left, top);
+
         }
 
 
     }
+
 
     private void renderRoundCornerRadius(int roundCornerRadius) {
         if (roundCornerRadius > 100)
@@ -155,15 +158,81 @@ public class ShadowRectLayout extends LinearLayout {
             roundCornerRadius = 0;
 
         if (getWidth() == getHeight())
-            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth());
+            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth() / 2);
         else if (getWidth() < getHeight())
-            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth());
+            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth() / 2);
         else
-            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getHeight());
+            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getHeight() / 2);
         this.roundCornerRadius = roundCornerRadius;
 
     }
 
+ /*   @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int maxHeight = 0;
+        int maxWidth = 0;
+        int childState = 0;
+//        int radii = (int) (shadowRadius * 1.8);
+//        int iShadowleft = radii * shadowLeft;
+//        int iShadowtop = radii * shadowLeft;
+//        int iShadowright = getWidth() - radii * shadowRight;
+//        int iShadowbottom = getHeight() - radii * shadowLeft;
+
+        setMeasuredDimension(getDefaultSize(0, widthMeasureSpec), getDefaultSize(0, heightMeasureSpec));
+        boolean shadowMeasureWidthMatchParent = getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT;
+        boolean shadowMeasureHeightMatchParent = getLayoutParams().height == ViewGroup.LayoutParams.MATCH_PARENT;
+        int widthSpec = widthMeasureSpec;
+        if (shadowMeasureWidthMatchParent) {
+            int childWidthSize = getMeasuredWidth()*//* - iShadowleft - iShadowright*//*;
+            widthSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
+        }
+        int heightSpec = heightMeasureSpec;
+        if (shadowMeasureHeightMatchParent) {
+            int childHeightSize = getMeasuredHeight() *//*- iShadowtop - iShadowbottom*//*;
+            heightSpec = MeasureSpec.makeMeasureSpec(childHeightSize, MeasureSpec.EXACTLY);
+        }
+        View child = getChildAt(0);
+        if (child.VISIBLE != View.GONE) {
+            measureChildWithMargins(child, widthSpec, 0, heightSpec, 0);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            if (shadowMeasureWidthMatchParent) {
+                Math.max(maxWidth,
+                        maxWidth = child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
+            } else {
+                Math.max(maxWidth,
+                        maxWidth = child.getMeasuredWidth() *//*+ iShadowleft + iShadowright *//*+ lp.leftMargin + lp.rightMargin);
+            }
+            if (shadowMeasureHeightMatchParent)
+                Math.max(maxHeight,
+                        maxHeight =
+                                child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
+            else
+                Math.max(maxHeight,
+                        maxHeight =
+                                child.getMeasuredHeight() *//*+ iShadowbottom + iShadowbottom *//*+ lp.topMargin + lp.bottomMargin);
+
+
+            childState = View.combineMeasuredStates(childState, child.getMeasuredState());
+        }
+        maxWidth += getPaddingLeft() + getPaddingRight();
+        maxHeight += getPaddingTop() + getPaddingBottom();
+
+        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
+        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+        Drawable drawable = getBackground();
+        if (drawable != null) {
+            maxHeight = Math.max(maxHeight, drawable.getMinimumHeight());
+            maxWidth = Math.max(maxWidth, drawable.getMinimumWidth());
+        }
+        setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureWidthMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
+//        setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureHeightMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
+//   this.setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureWidthMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
+
+
+    }*/
+
+
+//            this.setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureWidthMatchParent ? widthMeasureSpec : widthSpec, childState), View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << 16));
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
