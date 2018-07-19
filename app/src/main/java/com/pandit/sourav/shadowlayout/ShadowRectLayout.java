@@ -48,23 +48,15 @@ public class ShadowRectLayout extends LinearLayout {
     private boolean bShadowBottom = true;
     private boolean bShadowTop = true;
     private int resDrawable = -1;
-    private int shadowElevationLeft = 50;
-    private int shadowElevationRight = 20;
-    private int shadowElevationTop = 10;
-    private int shadowElevationBottom = 50;
-    protected int mViewWidth;
-    protected int mViewHeight;
-    private int maxWidth;
-
+    RoundedBitmapDrawable roundedBitmapDrawable = null;
+    LayerDrawable layerdrawable = null;
+    GradientDrawable roundGradiantDrawable = null;
 
     static final double COS_45 = Math.cos(Math.toRadians(45));
 
     static final float SHADOW_MULTIPLIER = 1.8f;
-
-    static final float SHADOW_TOP_SCALE = 0.25f;
-    static final float SHADOW_HORIZ_SCALE = 0.5f;
-    static final float SHADOW_BOTTOM_SCALE = 1f;
     private boolean mAddPaddingForCorners = true;
+    private float[] arrFlotCornerRadii;
 
     public ShadowRectLayout(Context mContext) {
         super(mContext);
@@ -298,26 +290,23 @@ public class ShadowRectLayout extends LinearLayout {
         return darkerColor;
     }
 
- /*   public static int dpToPixel(float dp) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        return (int) (dp * metrics.density);
-    }*/
 
     public Drawable getGradientDrawable(Context mContext, int imgDrawable, float fRadius, int color1, int color2) {
-        //        float[] m_arrfTopHalfOuterRadii =new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius};
-        RoundedBitmapDrawable roundedBitmapDrawable = null;
-        LayerDrawable layerdrawable = null;
-        GradientDrawable roundGradiantDrawable = null;
+        arrFlotCornerRadii = new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius};
+
         if (imgDrawable > 0) {
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgDrawable);
-            roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
+            if (roundedBitmapDrawable == null)
+                roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
             roundedBitmapDrawable.setCornerRadius(fRadius);
+
         }
 
 
         if (color1 != -1 || color2 != -1) {
 
-            roundGradiantDrawable = new GradientDrawable();
+            if (roundGradiantDrawable == null)
+                roundGradiantDrawable = new GradientDrawable();
             roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
             roundGradiantDrawable.setCornerRadii(new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius});
             if (color1 != -1 && color2 == -1)
