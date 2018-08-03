@@ -57,6 +57,7 @@ public class ShadowRectLayout extends LinearLayout {
     static final float SHADOW_MULTIPLIER = 1.8f;
     private boolean mAddPaddingForCorners = true;
     private float[] arrFlotCornerRadii;
+    private int cornerRadius = -1;
 
     public ShadowRectLayout(Context mContext) {
         super(mContext);
@@ -117,7 +118,8 @@ public class ShadowRectLayout extends LinearLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        renderRoundCornerRadius(roundCornerRadius);
+        if (cornerRadius == -1)
+            renderRoundCornerRadius(roundCornerRadius);
         View view = getChildAt(0);
         int radii = (int) (shadowRadius * SHADOW_MULTIPLIER);
         int left;
@@ -138,7 +140,7 @@ public class ShadowRectLayout extends LinearLayout {
             top = radii * shadowLeft;
             right = getWidth() - radii * shadowRight;
             bottom = getHeight() - radii * shadowLeft;
-            int hOffset = (int) Math.ceil(calculateHorizontalPadding(radii, roundCornerRadius,
+            int hOffset = (int) Math.ceil(calculateHorizontalPadding(radii, cornerRadius,
                     mAddPaddingForCorners));
             this.setPadding(left, hOffset + top, left, hOffset + top);
             view.layout(left, top + hOffset, right, bottom - hOffset);
@@ -149,7 +151,7 @@ public class ShadowRectLayout extends LinearLayout {
             top = radii * shadowTop;
             right = getWidth() - radii * shadowRight;
             bottom = getHeight() - radii * shadowBottom;
-            int vOffset = (int) Math.ceil(calculateVerticalPadding(radii, roundCornerRadius,
+            int vOffset = (int) Math.ceil(calculateVerticalPadding(radii, cornerRadius,
                     mAddPaddingForCorners));
             this.setPadding(left + vOffset, top, left + vOffset, top);
             view.layout(left + vOffset, top, right - vOffset, bottom);
@@ -169,7 +171,7 @@ public class ShadowRectLayout extends LinearLayout {
             roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth() / 2);
         else
             roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getHeight() / 2);
-        this.roundCornerRadius = roundCornerRadius;
+        this.cornerRadius = roundCornerRadius;
 
     }
 
@@ -298,6 +300,7 @@ public class ShadowRectLayout extends LinearLayout {
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgDrawable);
             if (roundedBitmapDrawable == null)
                 roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
+
             roundedBitmapDrawable.setCornerRadius(fRadius);
 
         }
