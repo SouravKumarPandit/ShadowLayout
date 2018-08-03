@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "THis is it", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "THis is it", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -126,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         linearLayout1.addView(getTextView());
-        linearLayout1.addView(getTextView());
-        linearLayout1.addView(getTextView());
+//        linearLayout1.addView(getTextView());
+//        linearLayout1.addView(getTextView());
 //        linearLayout1.addView(getTextView());
 //        linearLayout1.addView(getTextView());
 //        linearLayout1.addView(getTextView());
