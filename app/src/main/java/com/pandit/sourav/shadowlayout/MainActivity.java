@@ -44,13 +44,13 @@ public class MainActivity extends AppCompatActivity {
 //        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(getScreenWidth(), ViewGroup  .LayoutParams.MATCH_PARENT));
         rectLayout.setShadowRadius(dpToPixel(15));
 //        rectLayout.setShadowColor(Color.RED);
-        rectLayout.setShadowColor(Color.RED);
+//        rectLayout.setShadowColor(Color.RED);
         rectLayout.setOffSetX(0);
         rectLayout.setOffSetY(0);
-        rectLayout.setRoundCornerRadius(100);
+        rectLayout.setRoundCornerRadius(0);
         rectLayout.setResDrawable(R.drawable.metting_img);
-        rectLayout.setImgGradientColor1(0x5b9F76C4);
-        rectLayout.setImgGradientColor2(0xC1AE4F72);
+//        rectLayout.setImgGradientColor1(0x5b9F76C4);
+//        rectLayout.setImgGradientColor2(0xC1AE4F72);
         LinearLayout linearLayout1=new LinearLayout(this);
         LinearLayout.MarginLayoutParams linearLayout1Param=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        linearLayout1Param.setMargins(50,50,50,50);
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         gradientDrawable.setCornerRadius(50);
         gradientDrawable.setColor(0x96bedeFF);
 //        textView.setBackgroundColor(0x77E27177);
-        textView.setBackground(gradientDrawable);
+//        textView.setBackground(gradientDrawable);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         return textView;
     }
