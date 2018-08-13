@@ -37,18 +37,17 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.setGravity(Gravity.CENTER);
 
         ShadowRectLayout rectLayout = new ShadowRectLayout(this);
-        rectLayout.setClipToPadding(false);
 
 //        rectLayout.setLayoutParams(new LinearLayout.LayoutParams((int) (getScreenWidth() / 1.3), (int) (getScreenWidth() / 1.3)));
         rectLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 //        rectLayout.setLayoutParams(new LinearLayout.LayoutParams(getScreenWidth(), ViewGroup  .LayoutParams.MATCH_PARENT));
-        rectLayout.setShadowRadius(dpToPixel(15));
+        rectLayout.setShadowRadius(10);
 //        rectLayout.setShadowColor(Color.RED);
 //        rectLayout.setShadowColor(Color.RED);
-        rectLayout.setOffSetX(0);
-        rectLayout.setOffSetY(0);
-        rectLayout.setRoundCornerRadius(0);
-        rectLayout.setResDrawable(R.drawable.metting_img);
+        rectLayout.setOffSetX(5);
+        rectLayout.setOffSetY(5);
+        rectLayout.setRoundCornerRadius(5);
+//        rectLayout.setResDrawable(R.drawable.metting_img);
 //        rectLayout.setImgGradientColor1(0x5b9F76C4);
 //        rectLayout.setImgGradientColor2(0xC1AE4F72);
         LinearLayout linearLayout1=new LinearLayout(this);
