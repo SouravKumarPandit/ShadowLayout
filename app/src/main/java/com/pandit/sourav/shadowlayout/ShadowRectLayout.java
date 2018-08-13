@@ -1,3 +1,20 @@
+/*
+ *
+ * # Copyright 2018 Sourav Kaumar Pandit
+ * #
+ * # Licensed under the Apache License, Version 2.0 (the "License");
+ * # you may not use this file except in compliance with the License.
+ * # You may obtain a copy of the License at
+ * #
+ * #     http://www.apache.org/licenses/LICENSE-2.0
+ * #
+ * # Unless required by applicable law or agreed to in writing, software
+ * # distributed under the License is distributed on an "AS IS" BASIS,
+ * # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * # See the License for the specific language governing permissions and
+ * # limitations under the License.
+ */
+
 package com.pandit.sourav.shadowlayout;
 
 import android.content.Context;
@@ -7,7 +24,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -17,15 +33,25 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-
-public class ShadowRectLayout extends LinearLayout {
 
 
+/*
+# Copyright 2018 Sourav Kaumar pandit
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.*/
+public class ShadowRectLayout extends ViewGroup {
     public final Context mContext;
     private Paint shadowPaint;
     private RectF rectF;
@@ -34,7 +60,7 @@ public class ShadowRectLayout extends LinearLayout {
     float offSetY = 3;
     int baseBackgroundColor = 0xffffffff;
     private int roundCornerRadius = 0;
-    private int shadowColor = 0xffdedede;
+    private int shadowColor = 0xFFCECECE;
     private int mMaxChildren = 1;
     private int shadowLeft = 1;
     private int shadowRight = 1;
@@ -51,40 +77,32 @@ public class ShadowRectLayout extends LinearLayout {
     RoundedBitmapDrawable roundedBitmapDrawable = null;
     LayerDrawable layerdrawable = null;
     GradientDrawable roundGradiantDrawable = null;
-
-    static final double COS_45 = Math.cos(Math.toRadians(45));
-
     static final float SHADOW_MULTIPLIER = 1.8f;
-    private boolean mAddPaddingForCorners = true;
     private float[] arrFlotCornerRadii;
-    private int cornerRadius = -1;
 
-    public ShadowRectLayout(Context mContext) {
+    public ShadowRectLayout(Context mContext)
+    {
         super(mContext);
         this.mContext = mContext;
         initView(mContext, null);
 
     }
 
-    public ShadowRectLayout(Context mContext, @Nullable AttributeSet attrs) {
+    public ShadowRectLayout(Context mContext, @Nullable AttributeSet attrs)
+    {
         super(mContext, attrs);
         this.mContext = mContext;
         initView(mContext, attrs);
 
     }
 
-
-//    public RoundLinearLayout getRoundLinearLayout() {
-//        return roundLinearLayout;
-//    }
-//    private RoundLinearLayout roundLinearLayout;
-
-    private void initView(Context context, AttributeSet attrs) {
-        setGravity(Gravity.CENTER);
+    private void initView(Context context, AttributeSet attrs)
+    {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         shadowPaint = new Paint();
         rectF = new RectF();
-        if (attrs != null) {
+        if (attrs != null)
+        {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShadowRectLayout);
             roundCornerRadius = a.getDimensionPixelSize(R.styleable.ShadowRectLayout_roundCornerRadius, roundCornerRadius);
             shadowColor = a.getColor(R.styleable.ShadowRectLayout_shadowRectColor, Color.LTGRAY);
@@ -100,131 +118,101 @@ public class ShadowRectLayout extends LinearLayout {
             bShadowBottom = a.getBoolean(R.styleable.ShadowRectLayout_shadow_bottom, true);
             bShadowTop = a.getBoolean(R.styleable.ShadowRectLayout_shadow_Top, true);
             getRenderShadow();
-
             a.recycle();
-//            if (false/*todo change it to autoColor true*/)
-//            shadowColor=getDarkerColor(shadowColor);
         }
-        intitView(context);
+        initView(context);
+
 
     }
 
-    private void intitView(Context context) {
+    private void initView(Context context)
+    {
         shadowPaint.setColor(baseBackgroundColor);
         shadowPaint.setStyle(Paint.Style.FILL);
         shadowPaint.setAntiAlias(true);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        int radii = (int) (shadowRadius * SHADOW_MULTIPLIER);
+        // Measurement will ultimately be computing these values.
+        int maxHeight = 0;
+        int maxWidth = 0;
+        int childState = 0;
+        // from their size.
+        final View child = getChildAt(0);
+        if (child == null || child.getVisibility() == GONE)
+        {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+
+        // Measure the child.
+        measureChild(child, widthMeasureSpec, heightMeasureSpec);
+        maxWidth += Math.max(maxWidth, child.getMeasuredWidth());
+        maxHeight += Math.max(maxHeight, child.getMeasuredHeight());
+        childState = combineMeasuredStates(childState, child.getMeasuredState());
+
+        // Check against our minimum height and width
+        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
+        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+
+
+        int leftSide = radii * shadowLeft;
+        int topSide = radii * shadowTop;
+        int rightSide = radii * shadowRight;
+        int bottomSide = radii * shadowBottom;
+        maxHeight = maxHeight + (topSide + rightSide);
+        maxWidth = maxWidth + (leftSide + bottomSide);
+
+
+        // Report our final dimensions.
+        setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState), resolveSizeAndState(maxHeight, heightMeasureSpec, childState << MEASURED_HEIGHT_STATE_SHIFT));
+    }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (cornerRadius == -1)
-            renderRoundCornerRadius(roundCornerRadius);
+    protected void onLayout(boolean changed, int l, int t, int r, int b)
+    {
+        renderRoundCornerRadius(roundCornerRadius);
         View view = getChildAt(0);
         int radii = (int) (shadowRadius * SHADOW_MULTIPLIER);
-        int left;
-        int top;
-        int right;
-        int bottom;
+        int left = radii * shadowLeft;
+        int top = radii * shadowLeft;
+        int right = radii * shadowRight;
+        int bottom = radii * shadowLeft;
 
-
-        if (getHeight() == getWidth()) {
-            left = getWidth() / 6;
-            top = getWidth() / 6;
-            right = getWidth() - getWidth() / 6;
-            bottom = getHeight() - getWidth() / 6;
-            view.layout(left, top, right, bottom);
-        } else if (getHeight() > getWidth()) {
-            float scaleBy = (float) getWidth() / (float) getHeight();
-            left = radii * shadowLeft;
-            top = radii * shadowLeft;
-            right = getWidth() - radii * shadowRight;
-            bottom = getHeight() - radii * shadowLeft;
-            int hOffset = (int) Math.ceil(calculateHorizontalPadding(radii, cornerRadius,
-                    mAddPaddingForCorners));
-            this.setPadding(left, hOffset + top, left, hOffset + top);
-            view.layout(left, top + hOffset, right, bottom - hOffset);
-
-        } else /*if (getHeight() < getWidth()) */ {
-            float scaleBy = (float) getHeight() / (float) getWidth();
-            left = radii * shadowLeft;
-            top = radii * shadowTop;
-            right = getWidth() - radii * shadowRight;
-            bottom = getHeight() - radii * shadowBottom;
-            int vOffset = (int) Math.ceil(calculateVerticalPadding(radii, cornerRadius,
-                    mAddPaddingForCorners));
-            this.setPadding(left + vOffset, top, left + vOffset, top);
-            view.layout(left + vOffset, top, right - vOffset, bottom);
-        }
+        view.layout(left, top, getWidth() - right, getHeight() - bottom);
     }
 
 
-    private void renderRoundCornerRadius(int roundCornerRadius) {
+    private void renderRoundCornerRadius(int roundCornerRadius)
+    {
         if (roundCornerRadius > 100)
             roundCornerRadius = 100;
         else if (roundCornerRadius < 0)
             roundCornerRadius = 0;
-
         if (getWidth() == getHeight())
             roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth() / 2);
         else if (getWidth() < getHeight())
             roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth() / 2);
         else
             roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getHeight() / 2);
-        this.cornerRadius = roundCornerRadius;
+        this.roundCornerRadius = roundCornerRadius;
 
-    }
-
-    public boolean getPadding(Rect padding) {
-        int vOffset = (int) Math.ceil(calculateVerticalPadding(25, roundCornerRadius,
-                mAddPaddingForCorners));
-        int hOffset = (int) Math.ceil(calculateHorizontalPadding(25, roundCornerRadius,
-                mAddPaddingForCorners));
-        padding.set(hOffset, vOffset, hOffset, vOffset);
-        return true;
-    }
-
-    void setShadowSize(float shadowSize, float maxShadowSize) {
-        if (shadowSize < 0 || maxShadowSize < 0) {
-            throw new IllegalArgumentException("invalid shadow size");
-        }
-        shadowSize = toEven(shadowSize);
-        maxShadowSize = toEven(maxShadowSize);
-
-    }
-
-    private static int toEven(float value) {
-        int i = Math.round(value);
-        return (i % 2 == 1) ? i - 1 : i;
-    }
-
-    public float calculateVerticalPadding(float maxShadowSize, float cornerRadius,
-                                          boolean addPaddingForCorners) {
-        if (addPaddingForCorners) {
-            return (float) (maxShadowSize * SHADOW_MULTIPLIER + (1 - COS_45) * cornerRadius);
-        } else {
-            return maxShadowSize * SHADOW_MULTIPLIER;
-        }
-    }
-
-    public float calculateHorizontalPadding(float maxShadowSize, float cornerRadius,
-                                            boolean addPaddingForCorners) {
-        if (addPaddingForCorners) {
-            return (float) (maxShadowSize + (1 - COS_45) * cornerRadius);
-        } else {
-            return maxShadowSize;
-        }
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas)
+    {
         shadowPaint.setShadowLayer(shadowRadius, offSetX, offSetY, this.shadowColor);
         float rectValue = (float) (shadowRadius * SHADOW_MULTIPLIER);
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
 
         Drawable d = getGradientDrawable(mContext, resDrawable, roundCornerRadius, imgGradientColor1, imgGradientColor2);
-        if (d != null) {
+        if (d != null)
+        {
             d.setBounds((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
             d.draw(canvas);
         }
@@ -233,16 +221,26 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     @Override
-    public void addView(View child) {
-        if (getChildCount() > mMaxChildren) {
+    public void addView(View child)
+    {
+        if (getChildCount() > mMaxChildren)
+        {
             throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
         }
         super.addView(child);
     }
 
     @Override
-    public void addView(View child, int index) {
-        if (getChildCount() > mMaxChildren) {
+    protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    public void addView(View child, int index)
+    {
+        if (getChildCount() > mMaxChildren)
+        {
             throw new IllegalStateException(" cannot have more than " + mMaxChildren + " direct children");
         }
 
@@ -250,8 +248,10 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        if (getChildCount() > mMaxChildren) {
+    public void addView(View child, int index, ViewGroup.LayoutParams params)
+    {
+        if (getChildCount() > mMaxChildren)
+        {
             throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
         }
 
@@ -259,8 +259,10 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     @Override
-    public void addView(View child, ViewGroup.LayoutParams params) {
-        if (getChildCount() > mMaxChildren) {
+    public void addView(View child, ViewGroup.LayoutParams params)
+    {
+        if (getChildCount() > mMaxChildren)
+        {
             throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
         }
 
@@ -268,22 +270,30 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
     @Override
-    public void addView(View child, int width, int height) {
-        if (getChildCount() > mMaxChildren) {
+    public void addView(View child, int width, int height)
+    {
+        if (getChildCount() > mMaxChildren)
+        {
             throw new IllegalStateException("cannot have more than " + mMaxChildren + " direct children");
         }
         super.addView(child, width, height);
     }
 
-    public void getRenderShadow() {
-        if (!bShadowLeft) shadowLeft = 0;
-        if (!bShadowRight) shadowRight = 0;
-        if (!bShadowBottom) shadowBottom = 0;
-        if (!bShadowTop) shadowTop = 0;
+    public void getRenderShadow()
+    {
+        if (!bShadowLeft)
+            shadowLeft = 0;
+        if (!bShadowRight)
+            shadowRight = 0;
+        if (!bShadowBottom)
+            shadowBottom = 0;
+        if (!bShadowTop)
+            shadowTop = 0;
     }
 
 
-    public int getDarkerColor(int color) {
+    public int getDarkerColor(int color)
+    {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         hsv[1] = hsv[1] + 0.1f;
@@ -293,10 +303,12 @@ public class ShadowRectLayout extends LinearLayout {
     }
 
 
-    public Drawable getGradientDrawable(Context mContext, int imgDrawable, float fRadius, int color1, int color2) {
+    public Drawable getGradientDrawable(Context mContext, int imgDrawable, float fRadius, int color1, int color2)
+    {
         arrFlotCornerRadii = new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius};
 
-        if (imgDrawable > 0) {
+        if (imgDrawable > 0)
+        {
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgDrawable);
             if (roundedBitmapDrawable == null)
                 roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
@@ -305,75 +317,87 @@ public class ShadowRectLayout extends LinearLayout {
 
         }
 
-
-        if (color1 != -1 || color2 != -1) {
+        if (color1 != -1 || color2 != -1)
+        {
 
             if (roundGradiantDrawable == null)
                 roundGradiantDrawable = new GradientDrawable();
             roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
             roundGradiantDrawable.setCornerRadii(new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius});
             if (color1 != -1 && color2 == -1)
-//                roundGradiantDrawable.setColors(new int[]{color1,0x00FFFFFF});
+                //                roundGradiantDrawable.setColors(new int[]{color1,0x00FFFFFF});
                 roundGradiantDrawable.setColor(color1);
             else if (color1 == -1 && color2 != -1)
-//                roundGradiantDrawable.setColors(new int[]{0x00FFFFFF,color2});
+                //                roundGradiantDrawable.setColors(new int[]{0x00FFFFFF,color2});
                 roundGradiantDrawable.setColor(color2);
             else
                 roundGradiantDrawable.setColors(new int[]{color1, color2});
         }
 
-        if (roundedBitmapDrawable != null && roundGradiantDrawable != null) {
+        if (roundedBitmapDrawable != null && roundGradiantDrawable != null)
+        {
             Drawable[] drawableArray = {roundedBitmapDrawable, roundGradiantDrawable};
             layerdrawable = new LayerDrawable(drawableArray);
             layerdrawable.setLayerInset(0, 0, 0, 0, 0);
             layerdrawable.setLayerInset(1, 0, 0, 0, 0);
 
-        } else if (roundedBitmapDrawable == null && roundGradiantDrawable != null) {
+        } else if (roundedBitmapDrawable == null && roundGradiantDrawable != null)
+        {
             Drawable[] drawarray = {roundGradiantDrawable};
             layerdrawable = new LayerDrawable(drawarray);
             layerdrawable.setLayerInset(0, 0, 0, 0, 0);
-        } else if (roundedBitmapDrawable != null && roundGradiantDrawable == null) {
+        } else if (roundedBitmapDrawable != null && roundGradiantDrawable == null)
+        {
             Drawable[] drawarray = {roundedBitmapDrawable};
             layerdrawable = new LayerDrawable(drawarray);
             layerdrawable.setLayerInset(0, 0, 0, 0, 0);
-        } else return null;
+        } else
+            return null;
 
 
         return layerdrawable;
     }
 
-    public void setShadowColor(@ColorInt int color) {
+    public void setShadowColor(@ColorInt int color)
+    {
         this.shadowColor = color;
         invalidate();
     }
 
-    public void setRoundCornerRadius(int roundCornerRadius) {
+    public void setRoundCornerRadius(int roundCornerRadius)
+    {
         this.roundCornerRadius = roundCornerRadius;
         invalidate();
     }
 
-    public double scaleRange(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
+    public double scaleRange(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax)
+    {
         return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
     }
 
 
-    public int getRadius() {
+    public int getRadius()
+    {
         return shadowRadius;
     }
 
-    public void setShadowRadius(int shadowRadius) {
+    public void setShadowRadius(int shadowRadius)
+    {
 
         this.shadowRadius = shadowRadius;
         invalidate();
 
     }
 
-    public float getOffSetX() {
+    public float getOffSetX()
+    {
         return offSetX;
     }
 
-    public void setOffSetX(int offSetX) {
-        if (offSetX > shadowRadius) {
+    public void setOffSetX(int offSetX)
+    {
+        if (offSetX > shadowRadius)
+        {
             this.offSetX = shadowRadius;
             invalidate();
             return;
@@ -383,8 +407,10 @@ public class ShadowRectLayout extends LinearLayout {
 
     }
 
-    public void setOffSetY(int offSetY) {
-        if (offSetY > shadowRadius) {
+    public void setOffSetY(int offSetY)
+    {
+        if (offSetY > shadowRadius)
+        {
             this.offSetY = shadowRadius;
             invalidate();
             return;
@@ -394,87 +420,103 @@ public class ShadowRectLayout extends LinearLayout {
 
     }
 
-    public int getBaseBackgroundColor() {
+    public int getBaseBackgroundColor()
+    {
         return baseBackgroundColor;
     }
 
-    public void setBaseBackgroundColor(int baseBackgroundColor) {
+    public void setBaseBackgroundColor(int baseBackgroundColor)
+    {
         this.baseBackgroundColor = baseBackgroundColor;
         shadowPaint.setColor(baseBackgroundColor);
         invalidate();
 
     }
 
-    public int getImgGradientColor1() {
+    public int getImgGradientColor1()
+    {
         return imgGradientColor1;
 
     }
 
-    public void setImgGradientColor1(int imgGradientColor1) {
+    public void setImgGradientColor1(int imgGradientColor1)
+    {
         this.imgGradientColor1 = imgGradientColor1;
         invalidate();
 
     }
 
-    public int getImgGradientColor2() {
+    public int getImgGradientColor2()
+    {
         return imgGradientColor2;
 
     }
 
-    public void setImgGradientColor2(int imgGradientColor2) {
+    public void setImgGradientColor2(int imgGradientColor2)
+    {
         this.imgGradientColor2 = imgGradientColor2;
         invalidate();
     }
 
 
-    public int getResDrawable() {
+    public int getResDrawable()
+    {
         return resDrawable;
     }
 
-    public void setResDrawable(int resDrawable) {
+    public void setResDrawable(int resDrawable)
+    {
         this.resDrawable = resDrawable;
         invalidate();
 
     }
 
-    public void setShadowLeft(boolean bShadowLeft) {
+    public void setShadowLeft(boolean bShadowLeft)
+    {
         this.bShadowLeft = bShadowLeft;
         getRenderShadow();
         invalidate();
     }
 
-    public void setShadowRight(boolean bShadowRight) {
+    public void setShadowRight(boolean bShadowRight)
+    {
         this.bShadowRight = bShadowRight;
         getRenderShadow();
         invalidate();
     }
 
-    public void setShadowBottom(boolean bShadowBottom) {
+    public void setShadowBottom(boolean bShadowBottom)
+    {
         this.bShadowBottom = bShadowBottom;
         getRenderShadow();
         invalidate();
     }
 
-    public void setShadowTop(boolean bShadowTop) {
+    public void setShadowTop(boolean bShadowTop)
+    {
         this.bShadowTop = bShadowTop;
         getRenderShadow();
         invalidate();
     }
 
-    public boolean isbShadowRight() {
+    public boolean isShadowRight()
+    {
         return bShadowRight;
     }
 
-    public boolean isbShadowLeft() {
+    public boolean isShadowLeft()
+    {
         return bShadowLeft;
     }
 
-    public boolean isbShadowBottom() {
+    public boolean isShadowBottom()
+    {
         return bShadowBottom;
 
     }
 
-    public boolean isbShadowTop() {
+    public boolean isShadowTop()
+    {
         return bShadowTop;
     }
 }
