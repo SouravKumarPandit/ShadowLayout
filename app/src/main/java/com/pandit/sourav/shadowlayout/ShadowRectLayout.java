@@ -15,42 +15,6 @@
  * # limitations under the License.
  */
 
-package com.pandit.sourav.shadowlayout;
-
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-
-
-/*
-# Copyright 2018 Sourav Kaumar pandit
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.*/
 
 public class ShadowRectLayout extends ViewGroup {
     public final Context mContext;
@@ -183,9 +147,9 @@ public class ShadowRectLayout extends ViewGroup {
         if (view!=null){
             int radii = (int) (shadowRadius * SHADOW_MULTIPLIER);
             int left = radii * shadowLeft;
-            int top = radii * shadowLeft;
+            int top = radii * shadowTop;
             int right = radii * shadowRight;
-            int bottom = radii * shadowLeft;
+            int bottom = radii * shadowBottom;
             view.layout(left, top, getWidth() - right, getHeight() - bottom);
         }
     }
