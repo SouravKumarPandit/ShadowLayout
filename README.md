@@ -4,6 +4,6 @@ This class will give you controll over the shadow in Viewgroup , Child view is n
 Screenshot
 ====
 
-|![screenshot](https://raw.githubusercontent.com/SouravKumarPandit/ShadowLayout/master/Capture_shadow.PNG)|
+|![screenshot](https://github.com/SouravKumarPandit/ShadowLayout/blob/master/sample.PNG)|
 
 
