@@ -1,9 +1,8 @@
 # ShadowLayout#
-|
-This class will give you controll over the shadow in Viewgroup , Child view is not aware of shadow so You should handled with pading , did't do this because of the to give control user to limit his layout to only on sice or making shadow only on sided
-
-go to this link how to use is to achive the desire ui
-![link](https://github.com/SouravKumarPandit/ShowcaseProjects)
+|This class contain ViewGroup with shadow and gradiant color option ,This Viewgroup is unaware of their child size,which is disadvantage but accidently more advantage,so you have full control over which side you want shadow and rounded etc, 
+==
+go to this link![link](https://github.com/SouravKumarPandit/ShowcaseProjects)
+--In this project i used this with diffrent attr value .and result was uniqe for every layout ,below is the exmple of this  
 Screenshot
 ====
 
