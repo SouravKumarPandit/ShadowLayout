@@ -15,42 +15,7 @@
  * # limitations under the License.
  */
 
-package com.pandit.sourav.shadowlayout;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-
-
-/*
-# Copyright 2018 Sourav Kaumar pandit
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.*/
 public class ShadowRectLayout extends ViewGroup {
     public final Context mContext;
     private Paint shadowPaint;
@@ -77,8 +42,12 @@ public class ShadowRectLayout extends ViewGroup {
     RoundedBitmapDrawable roundedBitmapDrawable = null;
     LayerDrawable layerdrawable = null;
     GradientDrawable roundGradiantDrawable = null;
+
+
     static final float SHADOW_MULTIPLIER = 1.8f;
     private float[] arrFlotCornerRadii;
+
+    boolean shadowColorAuto;
 
     public ShadowRectLayout(Context mContext)
     {
@@ -163,8 +132,8 @@ public class ShadowRectLayout extends ViewGroup {
         int topSide = radii * shadowTop;
         int rightSide = radii * shadowRight;
         int bottomSide = radii * shadowBottom;
-        maxHeight = maxHeight + (topSide + rightSide);
-        maxWidth = maxWidth + (leftSide + bottomSide);
+        maxHeight = maxHeight + topSide + rightSide;
+        maxWidth = maxWidth + leftSide + bottomSide;
 
 
         // Report our final dimensions.
@@ -174,32 +143,15 @@ public class ShadowRectLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b)
     {
-        renderRoundCornerRadius(roundCornerRadius);
         View view = getChildAt(0);
-        int radii = (int) (shadowRadius * SHADOW_MULTIPLIER);
-        int left = radii * shadowLeft;
-        int top = radii * shadowLeft;
-        int right = radii * shadowRight;
-        int bottom = radii * shadowLeft;
-
-        view.layout(left, top, getWidth() - right, getHeight() - bottom);
-    }
-
-
-    private void renderRoundCornerRadius(int roundCornerRadius)
-    {
-        if (roundCornerRadius > 100)
-            roundCornerRadius = 100;
-        else if (roundCornerRadius < 0)
-            roundCornerRadius = 0;
-        if (getWidth() == getHeight())
-            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth() / 2);
-        else if (getWidth() < getHeight())
-            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getWidth() / 2);
-        else
-            roundCornerRadius = (int) scaleRange(roundCornerRadius, 0, 100, 0, getHeight() / 2);
-        this.roundCornerRadius = roundCornerRadius;
-
+        if (view!=null){
+            int radii = (int) (shadowRadius * SHADOW_MULTIPLIER);
+            int left = radii * shadowLeft;
+            int top = radii * shadowTop;
+            int right = radii * shadowRight;
+            int bottom = radii * shadowBottom;
+            view.layout(left, top, getWidth() - right, getHeight() - bottom);
+        }
     }
 
     @Override
@@ -210,11 +162,11 @@ public class ShadowRectLayout extends ViewGroup {
         rectF.set(rectValue * shadowLeft, rectValue * shadowTop, canvas.getWidth() - rectValue * shadowRight, canvas.getHeight() - rectValue * shadowBottom);
         canvas.drawRoundRect(rectF, roundCornerRadius, roundCornerRadius, shadowPaint);
 
-        Drawable d = getGradientDrawable(mContext, resDrawable, roundCornerRadius, imgGradientColor1, imgGradientColor2);
-        if (d != null)
+        Drawable backgroundDrawable = getGradientDrawable(mContext, resDrawable, roundCornerRadius, imgGradientColor1, imgGradientColor2);
+        if (backgroundDrawable != null)
         {
-            d.setBounds((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
-            d.draw(canvas);
+            backgroundDrawable.setBounds((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
+            backgroundDrawable.draw(canvas);
         }
         canvas.save();
         super.dispatchDraw(canvas);
@@ -248,7 +200,7 @@ public class ShadowRectLayout extends ViewGroup {
     }
 
     @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params)
+    public void addView(View child, int index, LayoutParams params)
     {
         if (getChildCount() > mMaxChildren)
         {
@@ -259,7 +211,7 @@ public class ShadowRectLayout extends ViewGroup {
     }
 
     @Override
-    public void addView(View child, ViewGroup.LayoutParams params)
+    public void addView(View child, LayoutParams params)
     {
         if (getChildCount() > mMaxChildren)
         {
@@ -310,6 +262,8 @@ public class ShadowRectLayout extends ViewGroup {
         if (imgDrawable > 0)
         {
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgDrawable);
+            bitmap = ThumbnailUtils.extractThumbnail(bitmap, getWidth(), getHeight());
+
             if (roundedBitmapDrawable == null)
                 roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
 
@@ -325,10 +279,8 @@ public class ShadowRectLayout extends ViewGroup {
             roundGradiantDrawable.setShape(GradientDrawable.LINEAR_GRADIENT);
             roundGradiantDrawable.setCornerRadii(new float[]{fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius, fRadius});
             if (color1 != -1 && color2 == -1)
-                //                roundGradiantDrawable.setColors(new int[]{color1,0x00FFFFFF});
                 roundGradiantDrawable.setColor(color1);
             else if (color1 == -1 && color2 != -1)
-                //                roundGradiantDrawable.setColors(new int[]{0x00FFFFFF,color2});
                 roundGradiantDrawable.setColor(color2);
             else
                 roundGradiantDrawable.setColors(new int[]{color1, color2});
@@ -358,8 +310,10 @@ public class ShadowRectLayout extends ViewGroup {
         return layerdrawable;
     }
 
+
     public void setShadowColor(@ColorInt int color)
     {
+        this.shadowColorAuto=false;
         this.shadowColor = color;
         invalidate();
     }
@@ -370,7 +324,7 @@ public class ShadowRectLayout extends ViewGroup {
         invalidate();
     }
 
-    public double scaleRange(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax)
+    private double scaleRange(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax)
     {
         return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
     }
@@ -433,6 +387,25 @@ public class ShadowRectLayout extends ViewGroup {
 
     }
 
+    public boolean isShadowColorAuto()
+    {
+        return shadowColorAuto;
+    }
+
+    public void setShadowColorAuto(boolean shadowColorAuto)
+    {
+        if (imgGradientColor1 != -1)
+            setShadowColor(imgGradientColor1);
+        else if (imgGradientColor2 != -1)
+            setShadowColor(imgGradientColor2);
+        else
+            setShadowColor(Color.GRAY);
+        this.shadowColorAuto = shadowColorAuto;
+
+
+    }
+
+
     public int getImgGradientColor1()
     {
         return imgGradientColor1;
@@ -441,7 +414,10 @@ public class ShadowRectLayout extends ViewGroup {
 
     public void setImgGradientColor1(int imgGradientColor1)
     {
+
         this.imgGradientColor1 = imgGradientColor1;
+        if (shadowColorAuto && imgGradientColor1 != -1)
+            this.shadowColor = imgGradientColor1;
         invalidate();
 
     }
@@ -455,6 +431,8 @@ public class ShadowRectLayout extends ViewGroup {
     public void setImgGradientColor2(int imgGradientColor2)
     {
         this.imgGradientColor2 = imgGradientColor2;
+        if (shadowColorAuto && imgGradientColor2 != -1)
+            this.shadowColor = imgGradientColor2;
         invalidate();
     }
 
@@ -464,7 +442,7 @@ public class ShadowRectLayout extends ViewGroup {
         return resDrawable;
     }
 
-    public void setResDrawable(int resDrawable)
+    public void setResDrawable(@DrawableRes int resDrawable)
     {
         this.resDrawable = resDrawable;
         invalidate();
