@@ -47,7 +47,7 @@
     </declare-styleable>
 
 
-    <declare-styleable name="BetterCardView">
+    <declare-styleable name="BetterCardView3">
         <!--阴影颜色-->
         <attr name="shadowColor" format="color" />
         <!--阴影偏移量-->
@@ -74,46 +74,7 @@
         <attr name="android:foreground" />
     </declare-styleable>
 
-    <declare-styleable name="BetterTabLayout">
 
-        <attr name="tabTopLineHeight" format="color" />
-        <attr name="tabTopLineColor" format="dimension" />
-
-        <attr name="tabBottomLineColor" format="color" />
-        <attr name="tabBottomLineHeight" format="dimension" />
-
-        <attr name="tabIndicatorInFront" format="boolean" />
-        <attr name="tabIndicatorWithoutPadding" format="boolean" />
-        <attr name="tabIndicatorAlwaysInCenter" format="boolean" />
-
-        <attr name="tabIndicatorColor" format="color" />
-        <attr name="tabIndicatorHeight" format="dimension" />
-        <attr name="tabIndicatorHorizontalPadding" format="dimension" />
-
-        <attr name="tabIndicatorGravity" format="enum">
-            <enum name="bottom" value="0" />
-            <enum name="top" value="1" />
-            <enum name="center" value="2" />
-        </attr>
-
-        <attr name="tabDividerColor" format="color|reference" />
-        <attr name="tabDividerHeight" format="dimension" />
-
-        <attr name="tabBackground" format="reference" />
-        <attr name="tabTextAllCaps" format="boolean" />
-        <attr name="tabTextColor" format="color" />
-        <attr name="tabTextSize" format="dimension" />
-        <attr name="tabTextHorizontalPadding" format="dimension" />
-        <attr name="tabTextMinWidth" format="dimension" />
-        <attr name="tabLayoutId" format="reference" />
-        <attr name="tabTextViewId" format="reference" />
-        <attr name="tabDistributeEvenly" format="boolean" />
-        <attr name="tabClickable" format="boolean" />
-        <attr name="tabTitleOffset" format="dimension">
-            <enum name="auto_center" value="-1" />
-        </attr>
-
-    </declare-styleable>
     <declare-styleable name="CustomLayoutLP">
         <attr name="android:layout_gravity" />
         <attr name="layout_position">
