@@ -1,4 +1,4 @@
-/*
+package com.pandit.sourav.shadowlayout;/*
  *
  * # Copyright 2018 Sourav Kaumar Pandit
  * #
@@ -15,6 +15,28 @@
  * # limitations under the License.
  */
 
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.media.ThumbnailUtils;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+
+import org.jetbrains.annotations.Nullable;
 
 public class ShadowRectLayout extends ViewGroup {
     public final Context mContext;
